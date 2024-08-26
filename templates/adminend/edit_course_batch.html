@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Simplified Skill - Course</title>
+    <title>Simplified Skill - Category</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet"
         href="{{url_for('static', filename='admin-asset/assets/vendor/bootstrap/css/bootstrap.min.css')}}">
@@ -20,7 +20,6 @@
         href="{{url_for('static', filename='admin-asset/assets/vendor/inputmask/css/inputmask.css')}}" />
 
 
-    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 </head>
 
 <body>
@@ -216,20 +215,24 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{url_for('subcategory_data')}}"><i
-                                        class="fa fa-database"></i>Course
+                                        class="fa fa-database"></i></i>Course
                                     Subcategory Data</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{url_for('course_create')}}"><i class='far fa-file-alt'></i>Course Form</a>
+                                <a class="nav-link" href="{{url_for('course_create')}}"><i
+                                        class='far fa-file-alt'></i>Course Form</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{url_for('course_data')}}"><i class='far fa-file-alt'></i>Course Data</a>
+                                <a class="nav-link" href="{{url_for('course_data')}}"><i
+                                        class='far fa-file-alt'></i>Course Data</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.path == url_for('course_content_create') %}active{% endif %}"
-                                    href="{{url_for('course_content_create')}}"><i class='far fa-file-alt'></i>Course Content Form</a>
+                                <a class="nav-link" href="{{url_for('course_content_create')}}"><i
+                                        class='far fa-file-alt'></i>Course Content Form</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{url_for('course_batch_create')}}"><i
+                                        class='far fa-file-alt'></i>Course Batch Form</a>
                             </li>
                         </ul>
                     </div>
@@ -269,8 +272,8 @@
                                             <ol class="breadcrumb">
                                                 <li class="breadcrumb-item"><a href="{{url_for('admin')}}"
                                                         class="breadcrumb-link">Dashboard</a></li>
-                                                <li class="breadcrumb-item"><a href="{{url_for('course_content_create')}}"
-                                                        class="breadcrumb-link">Course Content</a></li>
+                                                <li class="breadcrumb-item"><a href="{{url_for('course_batch_create')}}"
+                                                        class="breadcrumb-link">Course Batch</a></li>
                                                 <li class="breadcrumb-item active" aria-current="page">Form</li>
                                             </ol>
                                         </nav>
@@ -297,52 +300,60 @@
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="section-block" id="basicform">
-                                    <h3 class="section-title">Course Content Form</h3>
+                                    <h3 class="section-title">Course Batch</h3>
 
                                 </div>
+
                                 <div class="card">
                                     <div class="card-body">
-                                        <form action="{{ url_for('course_content_create') }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            <!-- Course Select -->
+                                        <form action="{{ url_for('course_batch_edit_update', id=course_batch.id) }}"
+                                            method="POST">
                                             <div class="form-group">
-                                                <label for="courseSelect"
-                                                    class="col-form-label">Course</label>
-                                                <select id="courseSelect" class="form-control" name="course"
-                                                    required>
-                                                    <option selected>Select the Course</option>
+                                                <label for="courseSelect" class="col-form-label">Course</label>
+                                                <select id="courseSelect" class="form-control" name="course">
+                                                    <option disabled>Select the Course</option>
                                                     {% for course in courses %}
-                                                    <option value="{{ course.id }}">{{ course.course_title
-                                                        }}</option>
+                                                    <option value="{{ course.id }}" {% if
+                                                        course.id==course_batch.course_id %} selected {% endif %}>
+                                                        {{ course.course_title }}
+                                                    </option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
-
-
-                                            <!-- Course Content Title -->
                                             <div class="form-group">
-                                                <label for="courseContentTitle" class="col-form-label">Course Content Title</label>
-                                                <input id="courseContentTitle" type="text" class="form-control"
-                                                    name="courseContentTitle" placeholder="Enter Course Content Title" required>
+                                                <label for="courseBatch" class="col-form-label">Batch Number</label>
+                                                <input type="number" class="form-control" id="courseBatch"
+                                                    name="batchnum" value="{{ course_batch.batch_num }}"
+                                                    placeholder="Enter Course Batch Number">
                                             </div>
-
                                             <div class="form-group">
-                                                <label for="courseOverview" class="col-form-label">Course
-                                                    Content Detail</label>
-                                                <textarea id="courseContentDetail" class="form-control" name="courseContentDetail"
-                                                    placeholder="Enter Course Content" rows="30" cols="30" required></textarea>
+                                                <label for="batchAvailSeat" class="col-form-label">Batch Available
+                                                    Seat</label>
+                                                <input type="number" class="form-control" id="batchAvailSeat"
+                                                    name="batchavailseat" value="{{ course_batch.batch_avail_seat }}"
+                                                    placeholder="Enter Course Batch Seat">
                                             </div>
-
-                                            <!-- Submit Button -->
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                                <label for="batchStatus" class="col-form-label">Batch Status</label>
+                                                <select id="batchStatus" class="form-control" name="batchstatus">
+                                                    <option value="active" {% if course_batch.batch_status=='active'
+                                                        %}selected{% endif %}>Active</option>
+                                                    <option value="inactive" {% if course_batch.batch_status=='inactive'
+                                                        %}selected{% endif %}>Inactive</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Update</button>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
 
+
                             </div>
                         </div>
+
+
 
 
                         <!-- ============================================================== -->
@@ -429,12 +440,6 @@
                     }
                 })
         });
-    </script>
-
-    <!-- Apply CKEditor to textareas -->
-    <script>
-        
-        CKEDITOR.replace('courseContentDetail');
     </script>
 </body>
 

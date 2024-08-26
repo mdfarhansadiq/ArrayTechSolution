@@ -582,18 +582,75 @@ def course_batch_create():
         return redirect(url_for('admin_login'))
 
 
-# @app.route('/course-batch-edit/<int:id>', methods=['GET', 'POST'])
-# def course_batch_edit_update(id):
-#     if 'userrole' in session and session['userrole'] == 1:
-#         course_batch = CourseBatch.query.get_or_404(id)
-#         courses = Course.query.all()
-#         if request.method == 'POST':
-#             course_batch.course_id = request.form.get('course')
-#             course_batch.batch_num = request.form.get('batchnum')
-#             course_batch.batch_start_date = request.form.get('batchstartdate')
-#             course_batch.batch_end_date = request.form.get('batchenddate')
-#             course_batch.batch_avail_seat = request.form.get('batchavailseat')
-#             # course_batch.batch_status = request.form.get('batchstatus') 
+@app.route('/course-batch-edit/<int:id>', methods=['GET', 'POST'])
+def course_batch_edit_update(id):
+    if 'userrole' in session and session['userrole'] == 1:
+        course_batch = CourseBatch.query.get_or_404(id)
+        courses = Course.query.all()
+        
+        if request.method == 'POST':
+            new_course_id = request.form.get('course')
+            new_batch_num = request.form.get('batchnum')
+            # Uncomment if using these fields
+            # new_batch_start_date = request.form.get('batchstartdate')
+            # new_batch_end_date = request.form.get('batchenddate')
+            new_batch_avail_seat = request.form.get('batchavailseat')
+            new_batch_status = request.form.get('batchstatus')
+
+            # Validate data
+            if not new_course_id or not new_batch_num:
+                flash('Please fill out all required fields.', 'error')
+                return redirect(url_for('course_batch_edit_update', id=id))
+            
+            existing_batch = CourseBatch.query.filter_by(course_id=new_course_id, batch_num=new_batch_num).first()
+            
+            # Check if the existing batch is not the same as the current one
+            if existing_batch and existing_batch.id != course_batch.id:
+                flash('Course batch with this ID and number already exists!', 'error')
+                return redirect(url_for('course_batch_edit_update', id=id))
+
+            # Update course batch
+            course_batch.course_id = new_course_id
+            course_batch.batch_num = new_batch_num
+            course_batch.batch_avail_seat = new_batch_avail_seat
+            course_batch.batch_status = new_batch_status
+
+            db.session.commit()
+
+            flash('Course batch updated successfully!', 'success')
+            return redirect(url_for('course_batch_data'))
+        
+        return render_template('adminend/edit_course_batch.html', course_batch=course_batch, courses=courses)
+    
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+
+
+
+
+@app.route('/course-batch-delete/<int:id>')
+def course_batch_delete(id):
+    if 'userrole' in session and session['userrole'] == 1:
+        course_batch = CourseBatch.query.get_or_404(id)
+        db.session.delete(course_batch)
+        db.session.commit()
+        flash('Course batch deleted successfully!', 'error')
+        return redirect(url_for('course_batch_data'))
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+
+
+@app.route('/course-batch-data')
+def course_batch_data():
+    if 'userrole' in session and session['userrole'] == 1:
+        course_batches = db.session.query(CourseBatch, Course).join(Course).all()
+        return render_template('adminend/course_batchdata.html', course_batches=course_batches)
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+            
             #
 
 
