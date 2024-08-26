@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+        href="{{url_for('static', filename='admin-asset/assets/vendor/bootstrap/css/bootstrap.min.css')}}">
+    <link href="{{url_for('static', filename='admin-asset/assets/vendor/fonts/circular-std/style.css')}}"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='admin-asset/assets/libs/css/style.css') }}">
+    <link rel="stylesheet"
+        href="{{url_for('static', filename='admin-asset/assets/vendor/fonts/fontawesome/css/fontawesome-all.css')}}">
+    <link rel="stylesheet"
+        href="{{url_for('static', filename='admin-asset/assets/vendor/charts/chartist-bundle/chartist.css')}}">
+    <link rel="stylesheet"
+        href="{{url_for('static', filename='admin-asset/assets/vendor/charts/morris-bundle/morris.css')}}">
+    <link rel="stylesheet"
+        href="{{url_for('static', filename='admin-asset/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='admin-asset/assets/vendor/charts/c3charts/c3.css')}}">
+    <link rel="stylesheet"
+        href="{{url_for('static', filename='admin-asset/assets/vendor/fonts/flag-icon-css/flag-icon.min.css')}}">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .oauth-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .oauth-icons {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ============================================================== -->
+    <!-- login page  -->
+    <!-- ============================================================== -->
+    <div class="splash-container">
+        <div class="card">
+            <div class="card-header text-center">
+                <a href="../index.html">
+                    <img class="logo-img" src="{{url_for('static', filename='admin-asset/assets/images/logo.png')}}"
+                        alt="logo">
+                </a>
+                <span class="splash-description">Login Form</span>
+            </div>
+            <div class="card-body">
+                <!-- Commented out form here -->
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-info">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <div class="oauth-box">
+                    <h3>Sign in with</h3>
+                    <div class="oauth-icons">
+                        <a href="{{ url_for('google_login_signin') }}">
+                            <img
+                                src="{{ url_for('static', filename='admin-asset/assets/images/google-logo.png') }}"
+                                width="55px" height="55px" alt="Google logo">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-between">
+                <a href="{{ url_for('admin_signup') }}" class="footer-link">Create an account</a>
+                <!-- <a href="#" class="footer-link">Forgot Password</a> -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- end login page  -->
+    <!-- ============================================================== -->
+    <!-- Optional JavaScript -->
+    <script src="../assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

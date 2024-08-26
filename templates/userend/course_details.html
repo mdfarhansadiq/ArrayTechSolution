@@ -1,0 +1,1011 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="zxx">
+<!--<![endif]-->
+
+<!-- Mirrored from preview.colorlib.com/theme/educrown/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Aug 2024 15:02:47 GMT -->
+
+<head>
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="APPTON HTML5 Template is a simple Smooth Personal App Landing Template" />
+        <meta name="keywords" content="App, Landing, Business, Onepage, Html, Business" />
+
+        <title>Simplified Skill</title>
+
+        <link rel="shortcut icon" type="image/ico" href="assest/img/favicon.png" />
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+        <link href="{{ url_for('static', filename='assest/css/plugins.css')}}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='assest/css/theme.css')}}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='assest/css/icons.css')}}" rel="stylesheet">
+
+        <link href="{{url_for('static', filename='style.css')}}" rel="stylesheet">
+        <link rel="stylesheet" href="{{url_for('static', filename='course_details.css')}}">
+        <link href="{{url_for('static', filename='assest/css/responsive.css')}}" rel="stylesheet">
+        <script src="{{ url_for('static', filename='assest/js/vendor/modernizr-2.8.3.min.js')}}"></script>
+
+        <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target=".mainmenu-area" data-offset="90">
+        <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+        <!-- <div class="preeloader">
+                <div class="preloader-spinner"></div>
+        </div> -->
+
+        <a href="#scroolup" class="scrolltotop"><i class="fa fa-long-arrow-up"></i></a>
+
+        <header class="top-area top-area_details" id="home">
+                <div class="header-top-area" id="scroolup">
+
+                        <div class="mainmenu-area" id="mainmenu-area">
+                                <div class="mainmenu-area-bg"></div>
+                                <nav class="navbar">
+                                        <div class="container">
+                                                <div class="navbar-header">
+                                                        <a href="#home" class="navbar-brand"><img
+                                                                        src="{{url_for('static', filename='assest/img/logo.png')}}"
+                                                                        alt="logo"></a>
+                                                </div>
+                                                <div id="main-nav" class="stellarnav">
+                                                        <ul id="nav" class="nav navbar-nav pull-right">
+                                                                <li class=""><a href="{{url_for('home')}}">Home</a></li>
+                                                                <li><a href="index.html#features">Features</a></li>
+                                                                <li class="active"><a href="index.html#courses">Courses</a></li>
+                                                                <li><a href="index.html#testmonial">Testmonial</a></li>
+                                                                <li><a href="index.html#blog">Blog</a></li>
+                                                                <li><a href="index.html#faqs">Faqs</a></li>
+                                                                <li><a href="index.html#contact">Contact</a></li>
+                                                                <li><a class="login_btn"
+                                                                                href="signup.html">Login/Signup</a></li>
+                                                        </ul>
+                                                </div>
+                                        </div>
+                                </nav>
+                        </div>
+
+                </div>
+
+        </header>
+
+
+        <!-- Course details header -->
+        <section class=" course_details_header">
+                <div class="slide-bg-overlay"></div>
+                <div class="container">
+                        <div class="course_header_main">
+                                <p class="course_title_para"><a href="index.html">Home</a> / Course /
+                                        {{course.course_title}}</p>
+                                <h1 class="course_title">{{course.course_title}}</h1>
+                        </div>
+                </div>
+        </section>
+
+        <!-- Course details body -->
+        <section class="course_details_body_section">
+                <div class="container">
+                        <!-- <div class="btn_register">
+                        <a href="#" class="register_btn">Register</a>
+                </div> -->
+                        <div class="course_body_main">
+                                <!-- Course content -->
+                                <div class="course_content">
+
+                                        <div class="course_content_inner">
+
+                                                <!-- Tab header -->
+                                                <div class="tab_header">
+                                                        <button class="tab_btn overview_tab active" id="overview_tab">
+                                                                <div class="indicate"></div>
+                                                                Overview
+                                                        </button>
+                                                        <button class="tab_btn curriculum_tab" id="curriculum_tab">
+                                                                <div class="indicate"></div>
+                                                                Curriculum
+                                                        </button>
+                                                        <button class="tab_btn topics_tab" id="topics_tab">
+                                                                <div class="indicate"></div>
+                                                                Key Topics
+                                                        </button>
+                                                </div>
+
+                                                <!-- Tab body -->
+                                                <div class="tab_body">
+
+                                                        <!-- Overview content -->
+                                                        <div class="tab_content overview_tab active">
+                                                                <div class="overview_inner">
+                                                                        <h3 class="cd_content_title">Overview</h3>
+                                                                        <p class="paragraph"><b>Lorem ipsum dolor</b>
+                                                                                {{ course.course_overview | safe }}</p>
+
+                                                                        <p class="paraColoring">{{
+                                                                                course.course_overview}}</p>
+                                                                        <h4 class="cdc_sub_title">List of Overview</h4>
+                                                                        <ul class="CDO_list">
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet consectetur</li>
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet consectetur</li>
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet consectetur</li>
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet consectetur</li>
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet consectetur</li>
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet, consectetur
+                                                                                        adipisicing elit. Earum, cumque
+                                                                                        ullam? Tenetur delectus placeat
+                                                                                        architecto facere. Minima
+                                                                                        exercitationem vitae quasi?Lorem
+                                                                                        ipsum dolor sit amet consectetur
+                                                                                </li>
+                                                                                <li class="CDC_item">Lorem ipsum dolor
+                                                                                        sit amet consectetur</li>
+                                                                        </ul>
+                                                                        <p class="paragraph"><b>Lorem ipsum</b> dolor
+                                                                                sit amet consectetur, adipisicing elit.
+                                                                                Accusamus, quo. Cum incidunt ducimus
+                                                                                inventore atque. Consectetur cum quae
+                                                                                rerum unde ipsum laborum, repellat
+                                                                                assumenda iure cumque quaerat modi non
+                                                                                corporis.</p>
+
+                                                                        <h4 class="cdc_sub_title">Why choose this
+                                                                                course?</h4>
+                                                                        <ul class="CDO_list_bold">
+                                                                                <li class="CDO_item_bold">This is the
+                                                                                        resone one</li>
+                                                                                <li class="CDO_item_bold">This is the
+                                                                                        resone two Lorem, ipsum dolor.
+                                                                                </li>
+                                                                                <li class="CDO_item_bold">This is the
+                                                                                        resone three</li>
+                                                                                <li class="CDO_item_bold">This is the
+                                                                                        resone four Lorem ipsum dolor
+                                                                                        sit amet.</li>
+                                                                                <li class="CDO_item_bold">This is the
+                                                                                        resone five</li>
+                                                                        </ul>
+                                                                        <p class="paragraph"><b>Lorem ipsum dolor</b>
+                                                                                sit amet consectetur adipisicing elit.
+                                                                                Iste aliquam, facere qui quae tempora,
+                                                                                debitis quia doloremque quo vitae saepe,
+                                                                                libero nulla doloribus. Et rerum alias
+                                                                                quasi neque, aliquid, quidem molestias
+                                                                                natus expedita non repudiandae debitis
+                                                                                ab asperiores consequuntur iure beatae
+                                                                                cumque exercitationem quae amet vel
+                                                                                soluta! Magni, ut delectus.</p>
+                                                                </div>
+                                                        </div>
+
+                                                        <!-- Corriculum content -->
+                                                        <div class="tab_content curriculum_tab">
+                                                                <div class="cdc_curriculum_inner">
+                                                                        <h3 class="cd_content_title">Curriculum</h3>
+                                                                        <div class="cdc_curruculum">
+                                                                                <div class="wrapper center-block">
+                                                                                        <div class="panel-group"
+                                                                                                id="accordion"
+                                                                                                role="tablist"
+                                                                                                aria-multiselectable="true">
+
+                                                                                                <!-- Accordion single -->
+                                                                                                <div
+                                                                                                        class="panel panel-default">
+                                                                                                        <div class="panel-heading"
+                                                                                                                role="tab"
+                                                                                                                id="headingOne">
+                                                                                                                <h4
+                                                                                                                        class="panel-title">
+                                                                                                                        <a role="button"
+                                                                                                                                data-toggle="collapse"
+                                                                                                                                data-parent="#accordion"
+                                                                                                                                href="#collapseOne"
+                                                                                                                                aria-expanded="false"
+                                                                                                                                aria-controls="collapseOne">
+                                                                                                                                <span
+                                                                                                                                        class="accordion_tHead">
+                                                                                                                                        <span>Class
+                                                                                                                                                -
+                                                                                                                                                1</span>
+                                                                                                                                        <i
+                                                                                                                                                class="fa-sharp fa-solid fa-angle-down"></i>
+                                                                                                                                </span>
+                                                                                                                        </a>
+                                                                                                                </h4>
+                                                                                                        </div>
+                                                                                                        <div id="collapseOne"
+                                                                                                                class="panel-collapse collapse"
+                                                                                                                role="tabpanel"
+                                                                                                                aria-labelledby="headingOne">
+                                                                                                                <div
+                                                                                                                        class="panel-body">
+
+                                                                                                                        <!-- Class List -->
+                                                                                                                        <ul
+                                                                                                                                class="class_list">
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+
+                                                                                                                                        <!-- free video -->
+                                                                                                                                        <button
+                                                                                                                                                class="free_video_btn">Free
+                                                                                                                                                video</button>
+                                                                                                                                        <div
+                                                                                                                                                class="free_video_modal">
+                                                                                                                                                <div
+                                                                                                                                                        class="free_video_inner">
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_head">
+                                                                                                                                                                <p
+                                                                                                                                                                        class="video_title">
+                                                                                                                                                                        Class
+                                                                                                                                                                        name
+                                                                                                                                                                        here
+                                                                                                                                                                </p>
+                                                                                                                                                                <button
+                                                                                                                                                                        class="video_close"><i
+                                                                                                                                                                                class="fa-solid fa-xmark"></i></button>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_body">
+                                                                                                                                                                <iframe width="100%"
+                                                                                                                                                                        height="360"
+                                                                                                                                                                        src="https://www.youtube.com/embed/3xaH8_LJ_PI?si=YI7MtJ8Bz0IHhuc-"
+                                                                                                                                                                        title="YouTube video player"
+                                                                                                                                                                        frameborder="0"
+                                                                                                                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                                                                                                                                        referrerpolicy="strict-origin-when-cross-origin"
+                                                                                                                                                                        allowfullscreen></iframe>
+                                                                                                                                                        </div>
+                                                                                                                                                </div>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                        </ul>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+
+                                                                                                <!-- Accordion single -->
+                                                                                                <div
+                                                                                                        class="panel panel-default">
+                                                                                                        <div class="panel-heading"
+                                                                                                                role="tab"
+                                                                                                                id="headingTwo">
+                                                                                                                <h4
+                                                                                                                        class="panel-title">
+                                                                                                                        <a role="button"
+                                                                                                                                data-toggle="collapse"
+                                                                                                                                data-parent="#accordion"
+                                                                                                                                href="#collapseTwo"
+                                                                                                                                aria-expanded="false"
+                                                                                                                                aria-controls="collapseTwo">
+                                                                                                                                <span
+                                                                                                                                        class="accordion_tHead">
+                                                                                                                                        <span>Class
+                                                                                                                                                -
+                                                                                                                                                1</span>
+                                                                                                                                        <i
+                                                                                                                                                class="fa-sharp fa-solid fa-angle-down"></i>
+                                                                                                                                </span>
+                                                                                                                        </a>
+                                                                                                                </h4>
+                                                                                                        </div>
+                                                                                                        <div id="collapseTwo"
+                                                                                                                class="panel-collapse collapse"
+                                                                                                                role="tabpanel"
+                                                                                                                aria-labelledby="headingTwo">
+                                                                                                                <div
+                                                                                                                        class="panel-body">
+
+                                                                                                                        <!-- Class List -->
+                                                                                                                        <ul
+                                                                                                                                class="class_list">
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+
+                                                                                                                                        <!-- free video -->
+                                                                                                                                        <button
+                                                                                                                                                class="free_video_btn">Free
+                                                                                                                                                video</button>
+                                                                                                                                        <div
+                                                                                                                                                class="free_video_modal">
+                                                                                                                                                <div
+                                                                                                                                                        class="free_video_inner">
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_head">
+                                                                                                                                                                <p
+                                                                                                                                                                        class="video_title">
+                                                                                                                                                                        Class
+                                                                                                                                                                        name
+                                                                                                                                                                        here
+                                                                                                                                                                </p>
+                                                                                                                                                                <button
+                                                                                                                                                                        class="video_close"><i
+                                                                                                                                                                                class="fa-solid fa-xmark"></i></button>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_body">
+                                                                                                                                                                <iframe width="100%"
+                                                                                                                                                                        height="360"
+                                                                                                                                                                        src="https://www.youtube.com/embed/Czo4JXBBw3o?si=Ti2SRVcbKel8I-Dt"
+                                                                                                                                                                        title="YouTube video player"
+                                                                                                                                                                        frameborder="0"
+                                                                                                                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                                                                                                                                        referrerpolicy="strict-origin-when-cross-origin"
+                                                                                                                                                                        allowfullscreen></iframe>
+                                                                                                                                                        </div>
+                                                                                                                                                </div>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                        </ul>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+
+                                                                                                <!-- Accordion single -->
+                                                                                                <div
+                                                                                                        class="panel panel-default">
+                                                                                                        <div class="panel-heading"
+                                                                                                                role="tab"
+                                                                                                                id="headingThree">
+                                                                                                                <h4
+                                                                                                                        class="panel-title">
+                                                                                                                        <a role="button"
+                                                                                                                                data-toggle="collapse"
+                                                                                                                                data-parent="#accordion"
+                                                                                                                                href="#collapseThree"
+                                                                                                                                aria-expanded="false"
+                                                                                                                                aria-controls="collapseThree">
+                                                                                                                                <span
+                                                                                                                                        class="accordion_tHead">
+                                                                                                                                        <span>Class
+                                                                                                                                                -
+                                                                                                                                                3</span>
+                                                                                                                                        <i
+                                                                                                                                                class="fa-sharp fa-solid fa-angle-down"></i>
+                                                                                                                                </span>
+                                                                                                                        </a>
+                                                                                                                </h4>
+                                                                                                        </div>
+                                                                                                        <div id="collapseThree"
+                                                                                                                class="panel-collapse collapse"
+                                                                                                                role="tabpanel"
+                                                                                                                aria-labelledby="headingThree">
+                                                                                                                <div
+                                                                                                                        class="panel-body">
+
+                                                                                                                        <!-- Class List -->
+                                                                                                                        <ul
+                                                                                                                                class="class_list">
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+
+                                                                                                                                        <!-- free video -->
+                                                                                                                                        <button
+                                                                                                                                                class="free_video_btn">Free
+                                                                                                                                                video</button>
+                                                                                                                                        <div
+                                                                                                                                                class="free_video_modal">
+                                                                                                                                                <div
+                                                                                                                                                        class="free_video_inner">
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_head">
+                                                                                                                                                                <p
+                                                                                                                                                                        class="video_title">
+                                                                                                                                                                        Class
+                                                                                                                                                                        name
+                                                                                                                                                                        here
+                                                                                                                                                                        3
+                                                                                                                                                                </p>
+                                                                                                                                                                <button
+                                                                                                                                                                        class="video_close"><i
+                                                                                                                                                                                class="fa-solid fa-xmark"></i></button>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_body">
+                                                                                                                                                                <iframe width="100%"
+                                                                                                                                                                        height="360"
+                                                                                                                                                                        src="https://www.youtube.com/embed/3xaH8_LJ_PI?si=YI7MtJ8Bz0IHhuc-"
+                                                                                                                                                                        title="YouTube video player"
+                                                                                                                                                                        frameborder="0"
+                                                                                                                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                                                                                                                                        referrerpolicy="strict-origin-when-cross-origin"
+                                                                                                                                                                        allowfullscreen></iframe>
+                                                                                                                                                        </div>
+                                                                                                                                                </div>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                        </ul>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+
+                                                                                                <!-- Accordion single -->
+                                                                                                <div
+                                                                                                        class="panel panel-default">
+                                                                                                        <div class="panel-heading"
+                                                                                                                role="tab"
+                                                                                                                id="headingFour">
+                                                                                                                <h4
+                                                                                                                        class="panel-title">
+                                                                                                                        <a role="button"
+                                                                                                                                data-toggle="collapse"
+                                                                                                                                data-parent="#accordion"
+                                                                                                                                href="#collapseFour"
+                                                                                                                                aria-expanded="false"
+                                                                                                                                aria-controls="collapseFour">
+                                                                                                                                <span
+                                                                                                                                        class="accordion_tHead">
+                                                                                                                                        <span>Class
+                                                                                                                                                -
+                                                                                                                                                3</span>
+                                                                                                                                        <i
+                                                                                                                                                class="fa-sharp fa-solid fa-angle-down"></i>
+                                                                                                                                </span>
+                                                                                                                        </a>
+                                                                                                                </h4>
+                                                                                                        </div>
+                                                                                                        <div id="collapseFour"
+                                                                                                                class="panel-collapse collapse"
+                                                                                                                role="tabpanel"
+                                                                                                                aria-labelledby="headingFour">
+                                                                                                                <div
+                                                                                                                        class="panel-body">
+
+                                                                                                                        <!-- Class List -->
+                                                                                                                        <ul
+                                                                                                                                class="class_list">
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+
+                                                                                                                                        <!-- free video -->
+                                                                                                                                        <button
+                                                                                                                                                class="free_video_btn">Free
+                                                                                                                                                video</button>
+                                                                                                                                        <div
+                                                                                                                                                class="free_video_modal">
+                                                                                                                                                <div
+                                                                                                                                                        class="free_video_inner">
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_head">
+                                                                                                                                                                <p
+                                                                                                                                                                        class="video_title">
+                                                                                                                                                                        Class
+                                                                                                                                                                        name
+                                                                                                                                                                        here
+                                                                                                                                                                        4
+                                                                                                                                                                </p>
+                                                                                                                                                                <button
+                                                                                                                                                                        class="video_close"><i
+                                                                                                                                                                                class="fa-solid fa-xmark"></i></button>
+                                                                                                                                                        </div>
+                                                                                                                                                        <div
+                                                                                                                                                                class="video_body">
+                                                                                                                                                                <iframe width="100%"
+                                                                                                                                                                        height="360"
+                                                                                                                                                                        src="https://www.youtube.com/embed/Czo4JXBBw3o?si=Ti2SRVcbKel8I-Dt"
+                                                                                                                                                                        title="YouTube video player"
+                                                                                                                                                                        frameborder="0"
+                                                                                                                                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                                                                                                                                        referrerpolicy="strict-origin-when-cross-origin"
+                                                                                                                                                                        allowfullscreen></iframe>
+                                                                                                                                                        </div>
+                                                                                                                                                </div>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                                <li
+                                                                                                                                        class="class_item">
+                                                                                                                                        <div
+                                                                                                                                                class="class_icon">
+                                                                                                                                                <i
+                                                                                                                                                        class="fa-solid fa-newspaper"></i>
+                                                                                                                                                <span
+                                                                                                                                                        class="Csession_name">Lesson
+                                                                                                                                                        Details</span>
+                                                                                                                                        </div>
+                                                                                                                                </li>
+                                                                                                                        </ul>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                </div>
+
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                        <div class="tab_content topics_tab">
+                                                                <div class="key_topic_inner">
+                                                                        <h3 class="cd_content_title">Key Topics</h3>
+                                                                        <ul class="CDT_list">
+                                                                                <li class="CDT_item">Topic one Lorem sit
+                                                                                        amet.</li>
+                                                                                <li class="CDT_item">Topic one dolor sit
+                                                                                        amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem sit
+                                                                                        amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsu sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic ondolor sit
+                                                                                        amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                                <li class="CDT_item">Topic one Lorem
+                                                                                        ipsum dolor sit amet.</li>
+                                                                        </ul>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- Course Sidebar -->
+                                <div class="course_sidebar">
+
+                                        <div class="CDSB-img">
+                                                <img src="/assest/img/custom/blog-3.jpg" alt="" class="cdImg">
+                                                <p class="cds_discount">Discount: <b>20%</span></b>
+                                        </div>
+
+                                        <div class="sidebar_bottom">
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa-solid fa-tag"></i>
+                                                                <span>Price</span>
+                                                        </div>
+                                                        <p class="price_right green">500</p>
+                                                </div>
+
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa-solid fa-percent"></i>
+                                                                <span>Discount Price</span>
+                                                        </div>
+                                                        <p class="price_right green">350</p>
+                                                </div>
+
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa-solid fa-light fa-clock"></i>
+                                                                <span>Duration</span>
+                                                        </div>
+                                                        <p class="price_right">6 Month</p>
+                                                </div>
+
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa fa-user-plus"></i>
+                                                                <span>Available Seats</span>
+                                                        </div>
+                                                        <p class="price_right">5</p>
+                                                </div>
+
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa-solid fa-computer"></i>
+                                                                <span>Class Type</span>
+                                                        </div>
+                                                        <p class="price_right">Live</p>
+                                                </div>
+
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa-solid fa-key"></i>
+                                                                <span>Access</span>
+                                                        </div>
+                                                        <p class="price_right">Lifetime</p>
+                                                </div>
+
+                                                <!-- Price single -->
+                                                <div class="price_single">
+                                                        <div class="price_left">
+                                                                <i class="fa-solid fa-clock"></i>
+                                                                <span>Time</span>
+                                                        </div>
+                                                        <p class="price_right"></p>
+                                                </div>
+
+                                                <!-- Send btn -->
+                                                <a href="" class="buy_now register_btn">Buy now</a>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </section>
+
+
+        <!-- Footer area -->
+        <footer class="footer-area sky-gray-bg relative">
+                <div class="footer-top-area padding-80-80 bg-dark">
+                        <div class="container">
+                                <div class="row">
+                                        <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+                                                <div
+                                                        class="single-footer footer-about sm-mb50 xs-mb50 sm-center xs-center">
+                                                        <div class="footer-logo mb30">
+                                                                <a href="#"><img src="assest/img/logo.png" alt></a>
+                                                        </div>
+                                                        <p>Saudi Arabia has been accused of using anti-terror laws to
+                                                                suppress free expression and failing to carry out
+                                                                independent inquiries into its Yemen.</p>
+                                                </div>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2 col-sm-4 col-xs-12">
+                                                <div class="single-footer footer-list white xs-center xs-mb50">
+                                                        <ul>
+                                                                <li><a href="#">About</a></li>
+                                                                <li><a href="#">Service</a></li>
+                                                                <li><a href="#">Team</a></li>
+                                                                <li><a href="#">Privicy Policy</a></li>
+                                                                <li><a href="#">Testmonial</a></li>
+                                                                <li><a href="#">Support</a></li>
+                                                        </ul>
+                                                </div>
+                                        </div>
+                                        <div class="col-md-5 col-lg-5 col-sm-8 col-xs-12">
+                                                <div class="single-footer footer-subscribe white xs-center">
+                                                        <h3 class="mb30 xs-font18">Subscribe Our Newsletter</h3>
+                                                        <p>Doubtful for answered one fat indulged margaret sir shutters
+                                                                together. Ladies so in wholly .</p>
+                                                        <div class="subscriber-form-area mt50 wow fadeIn">
+
+                                                                <form id="mc-form" class="subscriber-form">
+                                                                        <label class="mt10" for="mc-email"></label>
+                                                                        <input type="email" id="mc-email"
+                                                                                placeholder="email@example.com">
+                                                                        <button type="submit" class="plus-btn"><i
+                                                                                        class="fa fa-paper-plane-o"></i></button>
+                                                                </form>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="footer-bottom-area white">
+                        <div class="container">
+                                <div class="row">
+                                        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                                <div class="footer-copyright text-center wow fadeIn">
+                                                        <p>
+                                                                Copyright &copy;
+                                                                <script>document.write(new Date().getFullYear());</script>
+                                                                All rights reserved | This template is made with <i
+                                                                        class="fa fa-heart-o" aria-hidden="true"></i> by
+                                                                <a href="https://colorlib.com/"
+                                                                        target="_blank">Colorlib</a>
+                                                        </p>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </footer>
+
+
+        <script src="{{ url_for('static', filename='assest/js/vendor/jquery-1.12.4.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/vendor/bootstrap.min.js')}}"></script>
+
+        <script src="{{ url_for('static', filename='assest/js/vendor/jquery.easing.1.3.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/vendor/jquery-migrate-1.2.1.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/vendor/jquery.appear.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/owl.carousel.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/stellar.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/waypoints.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/jquery.counterup.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/wow.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/jquery-modal-video.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/stellarnav.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/placeholdem.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/contact-form.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/jquery.ajaxchimp.js')}}"></script>
+        <script src="{{ url_for('static', filename='assest/js/jquery.sticky.js')}}"></script>
+
+        <script src="{{ url_for('static', filename='assest/js/main.js')}}"></script>
+        <script src="{{url_for('static', filename='assest/js/course_details.js')}}"></script>
+
+
+        <script type="text/javascript"
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTS_KEDfHXYBslFTI_qPJIybDP3eceE-A&amp;sensor=false"></script>
+        <script src="assest/js/maps.active.js"></script>
+
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+        <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                gtag('js', new Date());
+
+                gtag('config', 'UA-23581568-13');
+        </script>
+        <script defer
+                src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
+                integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
+                data-cf-beacon='{"rayId":"8b215936e91f7712","version":"2024.7.0","serverTiming":{"name":{"cfL4":true}},"token":"cd0b4b3a733644fc843ef0b185f98241","b":1}'
+                crossorigin="anonymous"></script>
+</body>
+
+<!-- Mirrored from preview.colorlib.com/theme/educrown/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 12 Aug 2024 15:03:06 GMT -->
+
+</html>
