@@ -10,7 +10,7 @@ import re
 from werkzeug.utils import secure_filename
 from authlib.integrations.flask_client import OAuth
 from flask_sqlalchemy import SQLAlchemy
-
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -18,8 +18,8 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.urandom(24)
 oauth = OAuth(app)
-app.config['GOOGLE_CLIENT_ID'] = ""
-app.config['GOOGLE_CLIENT_SECRET'] = ""
+app.config['GOOGLE_CLIENT_ID'] = "google_client_id"
+app.config['GOOGLE_CLIENT_SECRET'] = "google_client_secret_key"
 # Set up the database URI
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///simplifiedskill.db'  # Using SQLite for simplicity
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -29,6 +29,7 @@ app.config['COURSE_IMAGE_UPLOAD_FOLDER'] = 'static/courseimg'  # Folder where im
 
 db = SQLAlchemy(app)
 # db.init_app(app)
+
 
 class Admin(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
@@ -666,7 +667,7 @@ def course_detail(course_url):
         for course_title, course_old_slug in courses:
             # Split the old slug field into a list
             course_old_slug_list = course_old_slug.split('#')
-            
+
             # Check if the provided course_url exists in the old slug list
             if course_url in course_old_slug_list:
                 # If a match is found, get the course with the corresponding title
@@ -675,7 +676,7 @@ def course_detail(course_url):
 
         # If no course is found, flash a message and redirect
         flash('Course not found.')
-        return redirect(url_for('course_data'))
+        return redirect(url_for('home'))
     
     # If the course is found with the current slug, render the page
     return render_template('userend/course_details.html', course=course)

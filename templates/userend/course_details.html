@@ -64,7 +64,9 @@
                                                         <ul id="nav" class="nav navbar-nav pull-right">
                                                                 <li class=""><a href="{{url_for('home')}}">Home</a></li>
                                                                 <li><a href="index.html#features">Features</a></li>
-                                                                <li class="active"><a href="index.html#courses">Courses</a></li>
+                                                                <li class="active"><a
+                                                                                href="index.html#courses">Courses</a>
+                                                                </li>
                                                                 <li><a href="index.html#testmonial">Testmonial</a></li>
                                                                 <li><a href="index.html#blog">Blog</a></li>
                                                                 <li><a href="index.html#faqs">Faqs</a></li>
@@ -129,41 +131,11 @@
                                                         <div class="tab_content overview_tab active">
                                                                 <div class="overview_inner">
                                                                         <h3 class="cd_content_title">Overview</h3>
-                                                                        <p class="paragraph"><b>Lorem ipsum dolor</b>
-                                                                                {{ course.course_overview | safe }}</p>
 
-                                                                        <p class="paraColoring">{{
-                                                                                course.course_overview}}</p>
-                                                                        <h4 class="cdc_sub_title">List of Overview</h4>
-                                                                        <ul class="CDO_list">
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet consectetur</li>
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet consectetur</li>
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet consectetur</li>
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet consectetur</li>
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet consectetur</li>
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet, consectetur
-                                                                                        adipisicing elit. Earum, cumque
-                                                                                        ullam? Tenetur delectus placeat
-                                                                                        architecto facere. Minima
-                                                                                        exercitationem vitae quasi?Lorem
-                                                                                        ipsum dolor sit amet consectetur
-                                                                                </li>
-                                                                                <li class="CDC_item">Lorem ipsum dolor
-                                                                                        sit amet consectetur</li>
-                                                                        </ul>
-                                                                        <p class="paragraph"><b>Lorem ipsum</b> dolor
-                                                                                sit amet consectetur, adipisicing elit.
-                                                                                Accusamus, quo. Cum incidunt ducimus
-                                                                                inventore atque. Consectetur cum quae
-                                                                                rerum unde ipsum laborum, repellat
-                                                                                assumenda iure cumque quaerat modi non
-                                                                                corporis.</p>
+                                                                        <p class="paraColoring">{{course.course_overview
+                                                                                | striptags}}</p>
+
+
 
                                                                         <h4 class="cdc_sub_title">Why choose this
                                                                                 course?</h4>
@@ -181,16 +153,7 @@
                                                                                 <li class="CDO_item_bold">This is the
                                                                                         resone five</li>
                                                                         </ul>
-                                                                        <p class="paragraph"><b>Lorem ipsum dolor</b>
-                                                                                sit amet consectetur adipisicing elit.
-                                                                                Iste aliquam, facere qui quae tempora,
-                                                                                debitis quia doloremque quo vitae saepe,
-                                                                                libero nulla doloribus. Et rerum alias
-                                                                                quasi neque, aliquid, quidem molestias
-                                                                                natus expedita non repudiandae debitis
-                                                                                ab asperiores consequuntur iure beatae
-                                                                                cumque exercitationem quae amet vel
-                                                                                soluta! Magni, ut delectus.</p>
+
                                                                 </div>
                                                         </div>
 
@@ -775,40 +738,9 @@
                                                         <div class="tab_content topics_tab">
                                                                 <div class="key_topic_inner">
                                                                         <h3 class="cd_content_title">Key Topics</h3>
-                                                                        <ul class="CDT_list">
-                                                                                <li class="CDT_item">Topic one Lorem sit
-                                                                                        amet.</li>
-                                                                                <li class="CDT_item">Topic one dolor sit
-                                                                                        amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem sit
-                                                                                        amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsu sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic ondolor sit
-                                                                                        amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                                <li class="CDT_item">Topic one Lorem
-                                                                                        ipsum dolor sit amet.</li>
-                                                                        </ul>
+
+                                                                        {{ course.course_keytopic | safe }}
+
                                                                 </div>
                                                         </div>
                                                 </div>
@@ -819,8 +751,13 @@
                                 <div class="course_sidebar">
 
                                         <div class="CDSB-img">
-                                                <img src="/assest/img/custom/blog-3.jpg" alt="" class="cdImg">
-                                                <p class="cds_discount">Discount: <b>20%</span></b>
+                                                <img src="{{url_for('static', filename='courseimg/' + course.course_image)}}" alt="{{ course.course_title}}" class="cdImg">
+                                                {% if course.course_discount_percent %}
+                                                <p class="cds_discount">Discount:
+                                                        <b><span>{{course.course_discount_percent}}%</span></b>
+                                                        {% else %}
+                                                <p class="cds_discount">Discount: <b><span>N/A</span></b>
+                                                        {% endif %}
                                         </div>
 
                                         <div class="sidebar_bottom">
@@ -830,17 +767,21 @@
                                                                 <i class="fa-solid fa-tag"></i>
                                                                 <span>Price</span>
                                                         </div>
-                                                        <p class="price_right green">500</p>
+                                                        <p class="price_right green">{{course.course_price}}</p>
                                                 </div>
 
                                                 <!-- Price single -->
+                                                {% if course.course_discount_price %}
                                                 <div class="price_single">
                                                         <div class="price_left">
                                                                 <i class="fa-solid fa-percent"></i>
                                                                 <span>Discount Price</span>
                                                         </div>
-                                                        <p class="price_right green">350</p>
+                                                        <p class="price_right green">{{course.course_discount_price}}
+                                                        </p>
                                                 </div>
+                                                {% endif %}
+
 
                                                 <!-- Price single -->
                                                 <div class="price_single">
@@ -851,14 +792,14 @@
                                                         <p class="price_right">6 Month</p>
                                                 </div>
 
-                                                <!-- Price single -->
+                                                <!-- Price single
                                                 <div class="price_single">
                                                         <div class="price_left">
                                                                 <i class="fa fa-user-plus"></i>
                                                                 <span>Available Seats</span>
                                                         </div>
                                                         <p class="price_right">5</p>
-                                                </div>
+                                                </div> -->
 
                                                 <!-- Price single -->
                                                 <div class="price_single">
@@ -866,7 +807,11 @@
                                                                 <i class="fa-solid fa-computer"></i>
                                                                 <span>Class Type</span>
                                                         </div>
-                                                        <p class="price_right">Live</p>
+                                                        {% if course.course_class_type == 1 %}
+                                                        <p class="price_right">Online Live</p>
+                                                        {% else %}
+                                                        <p class="price_right">Recorded</p>
+                                                        {% endif %}
                                                 </div>
 
                                                 <!-- Price single -->
@@ -879,13 +824,13 @@
                                                 </div>
 
                                                 <!-- Price single -->
-                                                <div class="price_single">
+                                                <!-- <div class="price_single">
                                                         <div class="price_left">
                                                                 <i class="fa-solid fa-clock"></i>
                                                                 <span>Time</span>
                                                         </div>
                                                         <p class="price_right"></p>
-                                                </div>
+                                                </div> -->
 
                                                 <!-- Send btn -->
                                                 <a href="" class="buy_now register_btn">Buy now</a>
