@@ -4,9 +4,14 @@ from datetime import timedelta
 from flask_wtf import FlaskForm
 from wtforms import StringField, EmailField, SubmitField
 from wtforms.validators import DataRequired, Email
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, Length, EqualTo
+# from flask_wtf.csrf import CSRFProtect
+# from flask_wtf.recaptcha import RecaptchaField
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import re
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from authlib.integrations.flask_client import OAuth
 from flask_sqlalchemy import SQLAlchemy
@@ -17,9 +22,17 @@ app = Flask(__name__)
 
 
 app.config['SECRET_KEY'] = os.urandom(24)
+# csrf = CSRFProtect(app)
 oauth = OAuth(app)
 app.config['GOOGLE_CLIENT_ID'] = "google_client_id"
 app.config['GOOGLE_CLIENT_SECRET'] = "google_client_secret_key"
+
+
+# reCAPTCHA configuration
+# app.config['RECAPTCHA_PUBLIC_KEY'] = 'recaptcha_public_key'
+# app.config['RECAPTCHA_PRIVATE_KEY'] = 'recaptcha_private_key'
+# app.config['RECAPTCHA_ENABLED'] = True
+
 # Set up the database URI
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///simplifiedskill.db'  # Using SQLite for simplicity
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -41,6 +54,23 @@ class Admin(db.Model):
         self.userrole = userrole
 
 
+class User(db.Model):
+    id = db.Column("id", db.Integer, primary_key=True)
+    # username = db.Column(db.String(130), unique=True, nullable=False)
+    username = db.Column(db.String(130), unique=False, nullable=False)
+    useremail = db.Column(db.String(230), unique=True, nullable=False)
+    usernumber = db.Column(db.String(130), unique=False, nullable=False)
+    password = db.Column(db.String(130), nullable=False)
+    # userrole = db.Column(db.Integer, unique=False, nullable=False)
+
+
+    def __init__(self, username, useremail, usernumber, password):
+        self.username = username
+        self.useremail = useremail
+        self.usernumber = usernumber
+        self.password = password
+        # self.userrole = userrole
+
 
 class Category(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
@@ -55,7 +85,6 @@ class Subcategory(db.Model):
 
     # Define a relationship to Category
     category = db.relationship('Category', backref=db.backref('subcategories', lazy=True))
-
 
 
 
@@ -120,6 +149,7 @@ class CourseReferralCode(db.Model):
 
 # Google OAuth 2.0 client configuration
 
+
 google = oauth.register(
     name='google',
     client_id=app.config['GOOGLE_CLIENT_ID'],
@@ -140,7 +170,10 @@ google = oauth.register(
 @app.route('/home')
 def home():
     # return 'Hello from Flask! <h1>Hello</h1>'
-    return render_template('userend/index.html')
+    user_name = None
+    if 'user_id' in session:
+        user_name = session['user_name']
+    return render_template('userend/index.html', user_name=user_name)
 
 
 @app.route('/simplifiedskill/admin')
@@ -681,14 +714,14 @@ def course_detail(course_url):
             if course_url in course_old_slug_list:
                 # If a match is found, get the course with the corresponding title
                 course = Course.query.filter_by(course_title=course_title).first_or_404()
-                return render_template('userend/course_details.html', course=course)
+                return render_template('userend/course_details.html', course=course, user_name=session['user_name'])
 
         # If no course is found, flash a message and redirect
         flash('Course not found.')
         return redirect(url_for('home'))
     
     # If the course is found with the current slug, render the page
-    return render_template('userend/course_details.html', course=course)
+    return render_template('userend/course_details.html', course=course, user_name=session['user_name'])
 
 
 @app.route('/course-data')
@@ -701,10 +734,20 @@ def course_data():
         return redirect(url_for('admin_login'))
 
 
-
 @app.route('/course/enroll')
 def course_enroll():
-    return render_template('userend/course_enroll.html')
+    if 'user_id' not in session:
+        session['next'] = request.url
+        return redirect(url_for('login'))
+    
+    return render_template('userend/course_enroll.html', user_name=session['user_name'])
+
+
+
+
+
+
+
 
 
 
@@ -725,21 +768,14 @@ def google_authorize():
     # Assuming 'sub' is the unique identifier for the user in Google's response
     data = Admin.query.filter_by(useremail = resp['email']).first()
     
+
+    # Check if the user exists in the database
     if not data:
         # If the user doesn't exist, create a new one
         count = db.session.query(Admin).count()
         if count == 0:
-            admin = Admin(
-                useremail = resp['email'],
-                userrole = 1
-            # Other fields...
-            )
-        # else:
-        #     admin = Admin(
-        #         useremail = resp['email'],
-        #         userrole = 0
-        #     # Other fields...
-        #     )
+            admin = Admin(useremail = resp['email'], userrole = 1)
+            
             db.session.add(admin)
             db.session.commit()
             session['useremail'] = resp['email']
@@ -750,75 +786,7 @@ def google_authorize():
     # print('Check: ' ,user.username, '\n')   
     # login_user(user)
     
-
     return redirect(url_for('admin'))
-
-
-
-class SignupForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    useremail = EmailField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Signup')
-
-
-@app.route('/simplifiedskill/signup', methods=["GET", "POST"])
-def admin_signup():
-    if "useremail" in session and session['useremail'] == 'mdfarhansadiq01@gmail.com':
-        flash('You are already logged in!')
-        return redirect(url_for('admin'))
-    
-    form = SignupForm()
-
-    if request.method == "POST":
-        if form.validate_on_submit():
-            # Extract data directly from the form object
-            username = form.username.data
-            useremail = form.useremail.data
-            
-            # Save data to the session
-            session.permanent = True
-            session['useremail'] = useremail
-            
-            # Redirect to the admin page
-            
-            return redirect(url_for("admin"))
-        else:
-            flash('Form validation failed. Please try again.')
-    
-    # Render the signup template with the form
-    return render_template('adminend/signup.html', form=form)
-
-
-
-
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    useremail = EmailField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Login')
-
-
-@app.route('/simplifiedskill/login', methods=["GET", "POST"])
-def admin_login():
-    if "useremail" in session and session['useremail'] == 'mdfarhansadiq01@gmail.com':
-        flash('You are already logged in!')
-        return redirect(url_for('admin'))
-    form = LoginForm()
-
-    if request.method == "POST":
-        if form.validate_on_submit():
-            # Extract data directly from the form object
-            username = form.username.data
-            useremail = form.useremail.data
-            
-            # Save data to the session
-            session.permanent = True
-            session['useremail'] = useremail
-            
-            # Redirect to the admin page
-            
-            return redirect(url_for("admin"))
-    return render_template('adminend/login.html', form=form)
-
 
 
 @app.route('/admin_logout_signout')
@@ -827,15 +795,100 @@ def admin_logout_signout():
     session.pop('userrole', None)
     return redirect(url_for('admin_login'))
 
-# @app.route('/<uemail>')
-# def user(uemail):
-#     return f'Hello {uemail}!'
 
 
-# @app.route('/admin')
-# def admin():
-#     return redirect(url_for('user', name='Admin!'))
 
+class SignupForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
+    useremail = StringField('Email', validators=[DataRequired(), Email()])
+    usernumber = StringField('Number', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    # recaptcha = RecaptchaField()
+    submit = SubmitField('Signup')
+
+
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if 'user_id' in session:
+        return redirect(url_for('home'))
+    form = SignupForm()
+    if form.validate_on_submit():  # This checks if the form has been submitted and all validations passed
+        username = form.username.data
+        useremail = form.useremail.data
+        usernumber = form.usernumber.data
+        password = form.password.data
+        
+        # Check if the user already exists
+        existing_user = User.query.filter_by(useremail=useremail).first()
+        if existing_user:
+            flash('Email already exists. Please choose a different email.', 'danger')
+            return redirect(url_for('signup'))
+        
+        # Hash the password before saving it
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        
+        # Create a new user with the hashed password
+        new_user = User(username=username, useremail=useremail, usernumber=usernumber, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        user = User.query.filter_by(useremail=useremail).first()
+        session['user_id'] = user.id
+        session['user_email'] = user.useremail
+        session['user_name'] = user.username
+        next_url = session.pop('next', url_for('home'))
+        return redirect(next_url)
+        # flash('Account created successfully! You can now log in.', 'success')
+    
+    return render_template('userend/signup.html', form=form)
+
+
+
+class LoginForm(FlaskForm):
+    useremail = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    submit = SubmitField('Login')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if 'user_id' in session:
+        return redirect(url_for('home'))
+    form = LoginForm()
+    if form.validate_on_submit():  # Checks if the form was submitted and all validations passed
+        useremail = form.useremail.data
+        password = form.password.data
+        
+        # Find user by email
+        user = User.query.filter_by(useremail=useremail).first()
+        
+        if user and check_password_hash(user.password, password):
+            # Store user info in the session
+            session['user_id'] = user.id
+            session['user_email'] = user.useremail
+            session['user_name'] = user.username
+            # flash('Login successful! Welcome back.', 'success')
+            next_url = session.pop('next', url_for('home'))
+            return redirect(next_url)  # Redirect to the dashboard or another page
+        else:
+            flash('Login failed. Please check your email and password and try again.', 'danger')
+            return redirect(url_for('login'))
+    
+    return render_template('userend/login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_email', None)
+    session.pop('user_id', None)
+    session.pop('user_name', None)
+    # flash('You have been logged out.')
+    return redirect(url_for('home'))
+
+
+# # Function to drop the 'course' table
+# @app.route('/drop_course_table')
 # def drop_course_table():
 #     with app.app_context():
 #         # Create a MetaData object
@@ -868,8 +921,27 @@ def admin_logout_signout():
 #             print("CourseBatch table does not exist.")
 
 
+# def drop_user_table():
+#     with app.app_context():
+#         # Create a MetaData object
+#         meta = db.MetaData()
+#         # Reflect the existing database into MetaData
+#         meta.reflect(bind=db.engine)
+#         # Access the 'user' table
+#         user_table = meta.tables.get('user')
+#         if user_table is not None:
+#             # Drop the table if it exists
+#             user_table.drop(bind=db.engine)
+#             print("User table dropped.")
+#         else:
+#             print("User table does not exist.")
+
+
+
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    # drop_course_batch_table()
+    # drop_user_table()
     app.run(host='0.0.0.0', port=5000, debug=True)
