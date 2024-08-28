@@ -400,6 +400,167 @@
     top: -120px;
 }
 
+/* Course enroll design start */
+.enroll_section{
+    padding: 50px 0;
+}
+.enroll_main{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    column-gap: 4%;
+    background: #ffffff;
+}
+.enroll_main .enroll_left{
+    width: 48%;
+}
+.enroll_left .e_left_inner{
+    box-shadow: 0 0 8px #03e26c73;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: .4s;
+}
+.enroll_left .e_left_inner:hover{
+    border-color: #03e26c;
+}
+.enroll_nameImage{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 15px;
+}
+.enroll_img{
+    width: 150px;
+}
+.enroll_img img{
+    width: 100%;
+    border-radius: 10px;
+}
+.enroll_name{
+    width: calc(100% - 165px);
+}
+.enroll_cName {
+    font-size: 2.1rem;
+    font-weight: 600;
+    letter-spacing: .1px;
+    margin-bottom: 0;
+    color: #2e2e43;
+}
+.batch {
+    padding: 5px 10px;
+    background: #D3FFEA;
+    border: 1px solid #83a193;
+    border-radius: 10px;
+    margin-top: 5px;
+    display: block;
+    width: fit-content;
+    color: #171932;
+    font-weight: 500;
+}
+.pTitle {
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    letter-spacing: .5px;
+}
+.ePrice_single{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 1rem;
+}
+.CPamount{
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+.ePrice_single.bold{
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, .2);
+}
+.ePrice_single.bold .CPamount{
+    color: #212121;
+    font-weight: 600;
+}
+.EifREquired a{
+    color: #03e26c;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.EifREquired{
+    margin-top: 2rem;
+}
+.EifREquired a:hover{
+    color: unset;
+}
+.enroll_main .enroll_right{
+    width: 48%;
+}
+.enroll_main .enroll_right{
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 7px #03e26c73;
+    border: 1px solid transparent;
+    transition: .4s;
+}
+.enroll_main .enroll_right:hover{
+    border-color: #03e26c;
+}
+.enroll_right .pay_title{
+    font-size: 1.7rem;
+    font-weight: 500;
+    color: #171932;
+}
+.enroll_right .pay_inner{
+    padding: 0 20px 20px 20px;
+    border-radius: 10px;
+    border: 1px solid #03e26c;
+}
+.pay_inner .pay_logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2rem;
+    border-bottom: 1px solid #03e26c;
+    margin-bottom: 20px;
+    padding: 0.6rem 0;
+}
+.rocket_logo{
+    width: 25%;
+}
+.pay_logo img{
+    max-width: 35%;
+}
+.payment_single{
+    color: #444444;
+    letter-spacing: 1px;
+}
+.pay_inner input{
+    width: fit-content;
+    max-width: 100%;
+    padding: 7px;
+    display: block;
+    border-radius: 5px;
+    border: 1px solid #777;
+}
+.PTid{
+    margin-top: 1.1rem;
+    color: #444444;
+    font-weight: 500;
+}
+.enroll_right .register_btn{
+    margin-top: 20px;
+    border: none;
+    margin-left: unset;
+}
+.pay_inner input:focus{
+    border-color: #03e26c;
+}
+.EifREquired.req_bottom{
+    display: none;
+}
+/* Course enroll design end */
+
 /* Mobile Responsive design start */
 
 /* Max width 992px */
@@ -407,7 +568,28 @@
     .course_header_main{
         margin-top: 25px;
     }
+    .enroll_main{
+        flex-direction: column;
+        row-gap: 3rem;
+        max-width: 700px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .enroll_main .enroll_left{
+        width: 100%;
+    }
+    .enroll_main .enroll_right{
+        width: 100%;
+    }
+    .EifREquired{
+        display: none;
+    }
+    .EifREquired.req_bottom{
+        display: block;
+        margin-top: 0;
+    }
 }
+
 
 @media (max-width: 901px) {
     .course_header_main{
@@ -478,6 +660,19 @@
     }
 }
 @media (max-width: 480px) {
+    .enroll_nameImage{
+        flex-direction: column;
+        row-gap: .5rem;
+    }
+    .enroll_name{
+        width: 100%;
+    }
+    .pay_logo img{
+        width: 40%;
+    }
+    .rocket_logo{
+        width: 30%;
+    }
     .video_body iframe{
         height: 235px;
     }

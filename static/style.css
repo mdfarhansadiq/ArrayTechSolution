@@ -23,6 +23,7 @@ Version: 1.0
 
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700');
 
+
 /*--------------------------
     1. SLIDER AREA
 -----------------------------*/
@@ -549,4 +550,23 @@ label.mt10.valid {
 .scrolltotop:hover {
     background: #3ee792;
     color: #ffffff;
+}
+
+/* Menubar btn */
+.login_btn{
+    background: #3ee792 !important;
+    color: #ffffff !important;
+    border-radius: 50px !important;
+    font-weight: 500 !important;
+    padding: 13px !important;
+    text-align: center !important;
+    display: inline-block !important;
+    margin-top: 25px;
+    margin-left: 10px;
+    transition: .4s;
+    border: 1px solid #31dc89;
+}
+.login_btn:hover{
+    color: #ffffff !important;
+    background: #292929 !important;
 }

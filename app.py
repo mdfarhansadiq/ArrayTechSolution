@@ -101,11 +101,21 @@ class CourseBatch(db.Model):
     batch_num = db.Column(db.Integer, unique=False, nullable=False)
     batch_avail_seat = db.Column(db.Integer, nullable=False, default=0)
     batch_status = db.Column(db.Integer, nullable=False, default=0)
-
     # Define a relationship to Course
     course = db.relationship('Course', backref=db.backref('course_batches', lazy=True))
     # Unique constraint
-    __table_args__ = (db.UniqueConstraint('course_id', 'batch_num', name='_course_batch_uc'),)
+    __table_args__ = (db.UniqueConstraint('course_id', 'batch_num', name='_course_batch_uc'),) 
+
+
+
+class CourseReferralCode(db.Model):
+    id = db.Column("id", db.Integer, primary_key=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+    referral_code = db.Column(db.String(130), unique=True, nullable=False)
+    referral_code_status = db.Column(db.Integer, nullable=False, default=0)
+    # Define a relationship to Course
+    course = db.relationship('Course', backref=db.backref('course_referral_codes', lazy=True))
+
 
 
 # Google OAuth 2.0 client configuration
@@ -654,7 +664,6 @@ def course_batch_data():
             
             #
 
-
 @app.route('/course/<course_url>')
 def course_detail(course_url):
     # Try to find the course with the given slug
@@ -691,6 +700,11 @@ def course_data():
         flash('You are not authorized to access this page.', 'error')
         return redirect(url_for('admin_login'))
 
+
+
+@app.route('/course/enroll')
+def course_enroll():
+    return render_template('userend/course_enroll.html')
 
 
 
