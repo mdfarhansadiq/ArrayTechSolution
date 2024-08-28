@@ -67,8 +67,11 @@
                                                                 <li><a href="index.html#blog">Blog</a></li>
                                                                 <li><a href="index.html#faqs">Faqs</a></li>
                                                                 <li><a href="index.html#contact">Contact</a></li>
-                                                                <li><a class="login_btn"
-                                                                                href="signup.html">Login/Signup</a></li>
+                                                                {% if user_name == None %}
+								<li><a class="login_btn" href="{{ url_for('login')}}">Login/Signup</a></li>
+								{% else %}
+								<li><a class="login_btn" href="{{ url_for('logout')}}">Logout</a></li>
+								{% endif %}
                                                         </ul>
                                                 </div>
                                         </div>
