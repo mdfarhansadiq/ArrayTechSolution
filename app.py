@@ -725,6 +725,46 @@ def course_data():
     else:
         flash('You are not authorized to access this page.', 'error')
         return redirect(url_for('admin_login'))
+    
+
+@app.route('/user-enroll-course-data')
+def user_enroll_course_data():
+    if 'userrole' in session and session['userrole'] == 1:
+        # user_enroll_courses = db.session.query(CourseEnroll, User, Course, CourseBatch).join(User).join(Course).join(CourseBatch).all()
+        user_enroll_courses = (
+        db.session.query(CourseEnroll, User, Course, CourseBatch)
+        .join(User, CourseEnroll.user_id == User.id)
+        .join(Course, CourseEnroll.course_id == Course.id)
+        .join(CourseBatch, CourseEnroll.course_batch_id == CourseBatch.id)
+        .all())
+
+        enrollments = []
+        for enroll, user, course, batch in user_enroll_courses:
+            enrollments.append({
+                'enroll_id': enroll.id,
+                'user': {
+                    'id': user.id,
+                    'name': user.username,
+                },
+                'course': {
+                    'id': course.id,
+                    'title': course.course_title,
+                },
+                'batch': {
+                    'id': batch.id,
+                    'batch_number': batch.batch_num,
+                },
+                'enroll_date': enroll.enroll_date,
+                'transaction_id': enroll.transaction_id,
+                'referral_code': enroll.referral_code
+            })
+        
+        return render_template('adminend/user_enroll_course_data.html', enrollments=enrollments)
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+
+
 
 
 @app.route('/course/<course_url>')
@@ -740,6 +780,7 @@ def course_detail(course_url):
         # If the course is not found, check in the old slugs
         courses = Course.query.with_entities(Course.course_title, Course.course_old_slug).filter(Course.course_old_slug.isnot(None)).all()
         
+
         for course_title, course_old_slug in courses:
             # Split the old slug field into a list
             course_old_slug_list = course_old_slug.split('#')
