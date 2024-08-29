@@ -88,7 +88,7 @@
                 <div class="slide-bg-overlay"></div>
                 <div class="container">
                         <div class="course_header_main">
-                                <p class="course_title_para"><a href="index.html">Home</a> / Course Details / Course
+                                <p class="course_title_para"><a href="{{url_for('home')}}">Home</a> / Course Details / Course
                                         Enroll</p>
                                 <h1 class="course_title">Course Enroll</h1>
                         </div>
@@ -106,22 +106,30 @@
                                         <div class="e_left_inner">
                                                 <div class="enroll_nameImage">
                                                         <div class="enroll_img">
-                                                                <img src="{{url_for('static', filename='assest/img/custom/blog-3.jpg')}}" alt="">
+                                                                <img src="{{url_for('static', filename='courseimg/'+ course.course_image)}}" alt="{{course.course_title}}">
                                                         </div>
                                                         <div class="enroll_name">
-                                                                <h3 class="enroll_cName">Course name will be here</h3>
-                                                                <span class="batch">Batch: <b>1</b></span>
+                                                                <h3 class="enroll_cName">{{course.course_title}}</h3>
+                                                                <span class="batch">Batch: <b>{{current_batch_num}}</b></span>
                                                         </div>
                                                 </div>
                                                 <div class="enroll_pDetails">
                                                         <h3 class="pTitle">Payment Details</h3>
                                                         <div class="ePrice_single">
                                                                 <p class="CPamount">Course price</p>
-                                                                <p class="CPamount">&#2547; 5000</p>
+                                                                {% if course.course_discount %}
+                                                                <p class="CPamount">&#2547; {{course.course_discount}}</p>
+                                                                {% else %}
+                                                                <p class="CPamount">&#2547; {{course.course_price}}</p>
+                                                                {% endif %}
                                                         </div>
                                                         <div class="ePrice_single bold">
                                                                 <p class="CPamount">Total payment</p>
-                                                                <p class="CPamount">&#2547; 5000</p>
+                                                                {% if course.course_discount %}
+                                                                <p class="CPamount">&#2547; {{course.course_discount}}</p>
+                                                                {% else %}
+                                                                <p class="CPamount">&#2547; {{course.course_price}}</p>
+                                                                {% endif %}
                                                         </div>
                                                 </div>
                                         </div>
@@ -134,22 +142,28 @@
                                 <div class="enroll_right">
                                         <h3 class="pay_title">Payment method</h3>
                                         <div class="pay_inner">
-                                                <div class="pay_logo">
-                                                        <img class="bkash_logo" src="{{url_for('static', filename='assest/img/payment/bkash-logo.png')}}"
-                                                                alt="">
-                                                        <img class="rocket_logo"
-                                                                src="{{url_for('static', filename='assest/img/payment/Rocket_ddbl.png')}}" alt="">
-                                                </div>
-                                                <p class="payment_single">Pay via Send Money</p>
-                                                <p class="payment_single">Bkash: <b>01600204433</b></p>
-                                                <p class="payment_single">Rocket: <b>017857077001</b></p>
-                                                <p class="payment_single">Payment Amount: <b>৳ 5000</b></p>
+                                            <div class="pay_logo">
+                                                <img class="bkash_logo" src="{{url_for('static', filename='assest/img/payment/bkash-logo.png')}}" alt="">
+                                                <img class="rocket_logo" src="{{url_for('static', filename='assest/img/payment/Rocket_ddbl.png')}}" alt="">
+                                            </div>
+                                            <p class="payment_single">Pay via Send Money</p>
+                                            <p class="payment_single">Bkash: <b>01600204433</b></p>
+                                            <p class="payment_single">Rocket: <b>017857077001</b></p>
+                                            <p class="payment_single">Payment Amount: {% if course.course_discount %}
+                                                <b>{{course.course_discount}}</b>
+                                                {% else %}
+                                                <b>{{course.course_price}}</b>
+                                                {% endif %}
+                                            
+                                            <!-- Fixed Input ID and Added Name Attribute -->
+                                            <form action="/payment" method="POST">
                                                 <label class="PTid" for="tId">Enter Transaction ID</label>
-                                                <input type="text" id="iTd" placeholder="Transaction ID">
-
+                                                <input type="text" id="tId" name="transaction_id" placeholder="Transaction ID">
+                                                <input type="hidden" name="course_batch" value="{{current_batch_id}}">
+                                                <button type="submit" class="register_btn">Submit</button>
+                                            </form>
                                         </div>
-                                        <button class="register_btn">Submit</button>
-                                </div>
+                                    </div>
 
                                 <p class="EifREquired req_bottom">If required, call at <a
                                                 href="tel: +8801785707700">+8801785707700</a> (10 am to 10 pm)</p>

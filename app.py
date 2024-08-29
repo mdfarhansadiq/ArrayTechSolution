@@ -130,6 +130,7 @@ class CourseBatch(db.Model):
     batch_num = db.Column(db.Integer, unique=False, nullable=False)
     batch_avail_seat = db.Column(db.Integer, nullable=False, default=0)
     batch_status = db.Column(db.Integer, nullable=False, default=0)
+
     # Define a relationship to Course
     course = db.relationship('Course', backref=db.backref('course_batches', lazy=True))
     # Unique constraint
@@ -137,14 +138,33 @@ class CourseBatch(db.Model):
 
 
 
-class CourseReferralCode(db.Model):
-    id = db.Column("id", db.Integer, primary_key=True)
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
-    referral_code = db.Column(db.String(130), unique=True, nullable=False)
-    referral_code_status = db.Column(db.Integer, nullable=False, default=0)
-    # Define a relationship to Course
-    course = db.relationship('Course', backref=db.backref('course_referral_codes', lazy=True))
+# class CourseReferralCode(db.Model):
+#     id = db.Column("id", db.Integer, primary_key=True)
+#     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+#     referral_code = db.Column(db.String(130), unique=True, nullable=False)
+#     referral_code_status = db.Column(db.Integer, nullable=False, default=0)
+#     # Define a relationship to Course
+#     course = db.relationship('Course', backref=db.backref('course_referral_codes', lazy=True))
 
+
+# class CourseEnroll(db.Model):
+#     id = db.Column('id', db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+#     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+#     course_batch_id = db.Column(db.Integer, db.ForeignKey('course_batch.id'), nullable=False)
+#     enroll_status = db.Column(db.Integer, nullable=False, default=0)
+#     enroll_date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())  # Set default to current timestamp
+#     transaction_id = db.Column(db.String(130), nullable=False)
+#     referral_code = db.Coulmn(db.String(130), nullable=True)
+
+#     # Define relationships
+#     user = db.relationship('User', backref=db.backref('course_enrolls', lazy=True))
+#     course = db.relationship('Course', backref=db.backref('course_enrolls', lazy=True))
+#     course_batch = db.relationship('CourseBatch', backref=db.backref('course_enrolls', lazy=True))
+
+#     # Unique constraint to ensure no duplicate enrollments
+#     __table_args__ = (db.UniqueConstraint('user_id', 'course_id', 'course_batch_id', name='_course_enroll_uc'),)
+ 
 
 
 # Google OAuth 2.0 client configuration
@@ -697,11 +717,23 @@ def course_batch_data():
             
             #
 
+@app.route('/course-data')
+def course_data():
+    if 'userrole' in session and session['userrole'] == 1:
+        courses = db.session.query(Course, Subcategory).join(Subcategory).all()
+        return render_template('adminend/coursedata.html', courses=courses)
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+
+
 @app.route('/course/<course_url>')
 def course_detail(course_url):
     # Try to find the course with the given slug
     course = Course.query.filter_by(course_slug=course_url).first()
-
+    user_name = None
+    if 'user_id' in session:
+        user_name = session['user_name']
     if course is None:
         # If the course is not found, check in the old slugs
         courses = Course.query.with_entities(Course.course_title, Course.course_old_slug).filter(Course.course_old_slug.isnot(None)).all()
@@ -714,38 +746,126 @@ def course_detail(course_url):
             if course_url in course_old_slug_list:
                 # If a match is found, get the course with the corresponding title
                 course = Course.query.filter_by(course_title=course_title).first_or_404()
-                return render_template('userend/course_details.html', course=course, user_name=session['user_name'])
+                session['next'] = 'http://127.0.0.1:5000/course/' + course.course_slug
+                return render_template('userend/course_details.html', course=course, user_name=user_name)
 
         # If no course is found, flash a message and redirect
         flash('Course not found.')
         return redirect(url_for('home'))
-    
+    # url redirect_back
+    session['next'] = request.url
     # If the course is found with the current slug, render the page
-    return render_template('userend/course_details.html', course=course, user_name=session['user_name'])
+    return render_template('userend/course_details.html', course=course, user_name=user_name)
 
 
-@app.route('/course-data')
-def course_data():
-    if 'userrole' in session and session['userrole'] == 1:
-        courses = db.session.query(Course, Subcategory).join(Subcategory).all()
-        return render_template('adminend/coursedata.html', courses=courses)
-    else:
-        flash('You are not authorized to access this page.', 'error')
-        return redirect(url_for('admin_login'))
 
 
-@app.route('/course/enroll')
-def course_enroll():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/course/enroll/<course_url>')
+def course_enroll(course_url):
     if 'user_id' not in session:
-        session['next'] = request.url
+        session['next'] = request.url   # url redirect_back save
         return redirect(url_for('login'))
+    course = None
+    course = Course.query.filter_by(course_slug=course_url).first()
+    if course is None:
+        courses = Course.query.with_entities(Course.course_title, Course.course_old_slug).filter(Course.course_old_slug.isnot(None)).all()
+
+        for course_title, course_old_slug in courses:
+            course_old_slug_list = course_old_slug.split('#')
+
+            if course_url in course_old_slug_list:
+                course = Course.query.filter_by(course_title=course_title).first_or_404()
+                
     
-    return render_template('userend/course_enroll.html', user_name=session['user_name'])
+    course_batches = CourseBatch.query.filter_by(course_id=course.id).all()
+    current_batch_id = None
+    current_batch_num = None
+    for batch in course_batches:
+        # Perform actions with each batch
+        if batch.batch_status == 1:
+            current_batch_id = batch.id
+            current_batch_num = batch.batch_num
+            break
+    # if request.method == 'POST':
+    #     user_id = session['user_id']
+    return render_template('userend/course_enroll.html', user_name=session['user_name'], course=course, current_batch_id=current_batch_id, current_batch_num=current_batch_num)
 
 
 
+class AdminSignupForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    useremail = EmailField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Signup')
+
+@app.route('/simplifiedskill/signup', methods=["GET", "POST"])
+def admin_signup():
+    if 'userrole' in session and session['userrole'] == 1:
+        flash('You are already logged in!')
+        return redirect(url_for('admin'))
+    
+    form = AdminSignupForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            # Extract data directly from the form object
+            username = form.username.data
+            useremail = form.useremail.data
+            
+            # Save data to the session
+            session.permanent = True
+            session['useremail'] = useremail
+            
+            # Redirect to the admin page
+            
+            return redirect(url_for("admin"))
+        else:
+            flash('Form validation failed. Please try again.')
+    
+    # Render the signup template with the form
+    return render_template('adminend/signup.html', form=form)
 
 
+class AdminLoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    useremail = EmailField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Login')
+
+
+@app.route('/simplifiedskill/login', methods=["GET", "POST"])
+def admin_login():
+    if 'userrole' in session and session['userrole'] == 1:
+        flash('You are already logged in!')
+        return redirect(url_for('admin'))
+    form = AdminLoginForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            # Extract data directly from the form object
+            username = form.username.data
+            useremail = form.useremail.data
+            
+            # Save data to the session
+            session.permanent = True
+            session['useremail'] = useremail
+            
+            # Redirect to the admin page
+            
+            return redirect(url_for("admin"))
+    return render_template('adminend/login.html', form=form)
 
 
 
@@ -812,7 +932,8 @@ class SignupForm(FlaskForm):
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if 'user_id' in session:
-        return redirect(url_for('home'))
+        next_url = session.pop('next', url_for('home'))
+        return redirect(next_url)
     form = SignupForm()
     if form.validate_on_submit():  # This checks if the form has been submitted and all validations passed
         username = form.username.data
@@ -854,7 +975,8 @@ class LoginForm(FlaskForm):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if 'user_id' in session:
-        return redirect(url_for('home'))
+        next_url = session.pop('next', url_for('home'))
+        return redirect(next_url)
     form = LoginForm()
     if form.validate_on_submit():  # Checks if the form was submitted and all validations passed
         useremail = form.useremail.data

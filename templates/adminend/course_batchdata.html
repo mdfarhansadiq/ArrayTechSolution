@@ -273,6 +273,7 @@
                                                 <th>Serial No.</th>
                                                 <th>Course Name</th>
                                                 <th>Batch</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -282,6 +283,7 @@
                                                     <td>{{ loop.index }}</td>
                                                     <td>{{ course.course_title }}</td>
                                                     <td>{{ batch.batch_num }}</td>
+                                                    <td>{{batch.batch_status}}</td>
                                                     <td><a href="{{ url_for('course_batch_edit_update', id=batch.id) }}" class="btn btn-primary">Edit</a>
                                                         <a href="{{ url_for('course_batch_delete', id=batch.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete Batch?');">Delete</a>
                                                     </td>
