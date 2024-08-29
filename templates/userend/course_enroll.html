@@ -56,7 +56,8 @@
                                         <div class="container">
                                                 <div class="navbar-header">
                                                         <a href="#home" class="navbar-brand"><img
-                                                                        src="{{url_for('static', filename='assest/img/logo.png')}}" alt="logo"></a>
+                                                                        src="{{url_for('static', filename='assest/img/logo.png')}}"
+                                                                        alt="logo"></a>
                                                 </div>
                                                 <div id="main-nav" class="stellarnav">
                                                         <ul id="nav" class="nav navbar-nav pull-right">
@@ -68,10 +69,14 @@
                                                                 <li><a href="index.html#faqs">Faqs</a></li>
                                                                 <li><a href="index.html#contact">Contact</a></li>
                                                                 {% if user_name == None %}
-								<li><a class="login_btn" href="{{ url_for('login')}}">Login/Signup</a></li>
-								{% else %}
-								<li><a class="login_btn" href="{{ url_for('logout')}}">Logout</a></li>
-								{% endif %}
+                                                                <li><a class="login_btn"
+                                                                                href="{{ url_for('login')}}">Login/Signup</a>
+                                                                </li>
+                                                                {% else %}
+                                                                <li><a class="login_btn"
+                                                                                href="{{ url_for('logout')}}">Logout</a>
+                                                                </li>
+                                                                {% endif %}
                                                         </ul>
                                                 </div>
                                         </div>
@@ -88,7 +93,8 @@
                 <div class="slide-bg-overlay"></div>
                 <div class="container">
                         <div class="course_header_main">
-                                <p class="course_title_para"><a href="{{url_for('home')}}">Home</a> / Course Details / Course
+                                <p class="course_title_para"><a href="{{url_for('home')}}">Home</a> / Course Details /
+                                        Course
                                         Enroll</p>
                                 <h1 class="course_title">Course Enroll</h1>
                         </div>
@@ -106,11 +112,13 @@
                                         <div class="e_left_inner">
                                                 <div class="enroll_nameImage">
                                                         <div class="enroll_img">
-                                                                <img src="{{url_for('static', filename='courseimg/'+ course.course_image)}}" alt="{{course.course_title}}">
+                                                                <img src="{{url_for('static', filename='courseimg/'+ course.course_image)}}"
+                                                                        alt="{{course.course_title}}">
                                                         </div>
                                                         <div class="enroll_name">
                                                                 <h3 class="enroll_cName">{{course.course_title}}</h3>
-                                                                <span class="batch">Batch: <b>{{current_batch_num}}</b></span>
+                                                                <span class="batch">Batch:
+                                                                        <b>{{current_batch_num}}</b></span>
                                                         </div>
                                                 </div>
                                                 <div class="enroll_pDetails">
@@ -118,7 +126,8 @@
                                                         <div class="ePrice_single">
                                                                 <p class="CPamount">Course price</p>
                                                                 {% if course.course_discount %}
-                                                                <p class="CPamount">&#2547; {{course.course_discount}}</p>
+                                                                <p class="CPamount">&#2547; {{course.course_discount}}
+                                                                </p>
                                                                 {% else %}
                                                                 <p class="CPamount">&#2547; {{course.course_price}}</p>
                                                                 {% endif %}
@@ -126,7 +135,8 @@
                                                         <div class="ePrice_single bold">
                                                                 <p class="CPamount">Total payment</p>
                                                                 {% if course.course_discount %}
-                                                                <p class="CPamount">&#2547; {{course.course_discount}}</p>
+                                                                <p class="CPamount">&#2547; {{course.course_discount}}
+                                                                </p>
                                                                 {% else %}
                                                                 <p class="CPamount">&#2547; {{course.course_price}}</p>
                                                                 {% endif %}
@@ -142,28 +152,43 @@
                                 <div class="enroll_right">
                                         <h3 class="pay_title">Payment method</h3>
                                         <div class="pay_inner">
-                                            <div class="pay_logo">
-                                                <img class="bkash_logo" src="{{url_for('static', filename='assest/img/payment/bkash-logo.png')}}" alt="">
-                                                <img class="rocket_logo" src="{{url_for('static', filename='assest/img/payment/Rocket_ddbl.png')}}" alt="">
-                                            </div>
-                                            <p class="payment_single">Pay via Send Money</p>
-                                            <p class="payment_single">Bkash: <b>01600204433</b></p>
-                                            <p class="payment_single">Rocket: <b>017857077001</b></p>
-                                            <p class="payment_single">Payment Amount: {% if course.course_discount %}
-                                                <b>{{course.course_discount}}</b>
-                                                {% else %}
-                                                <b>{{course.course_price}}</b>
-                                                {% endif %}
-                                            
-                                            <!-- Fixed Input ID and Added Name Attribute -->
-                                            <form action="/payment" method="POST">
-                                                <label class="PTid" for="tId">Enter Transaction ID</label>
-                                                <input type="text" id="tId" name="transaction_id" placeholder="Transaction ID">
-                                                <input type="hidden" name="course_batch" value="{{current_batch_id}}">
-                                                <button type="submit" class="register_btn">Submit</button>
-                                            </form>
+                                                <div class="pay_logo">
+                                                        <img class="bkash_logo"
+                                                                src="{{url_for('static', filename='assest/img/payment/bkash-logo.png')}}"
+                                                                alt="">
+                                                        <img class="rocket_logo"
+                                                                src="{{url_for('static', filename='assest/img/payment/Rocket_ddbl.png')}}"
+                                                                alt="">
+                                                </div>
+                                                <p class="payment_single">Pay via Send Money</p>
+                                                <p class="payment_single">Bkash: <b>01600204433</b></p>
+                                                <p class="payment_single">Rocket: <b>017857077001</b></p>
+                                                <p class="payment_single">Payment Amount: {% if course.course_discount
+                                                        %}
+                                                        <b>{{course.course_discount}}</b>
+                                                        {% else %}
+                                                        <b>{{course.course_price}}</b>
+                                                        {% endif %}
+
+                                                        <!-- Fixed Input ID and Added Name Attribute -->
+                                                <form action="{{url_for('course_enroll', course_url=course.course_slug)}}" method="POST">
+                                                        <div>
+                                                                {% with messages = get_flashed_messages() %}
+                                                                {% if messages %}
+                                                                {% for message in messages %}
+                                                                {{ message }}
+                                                                {% endfor %}
+                                                                {% endif %}
+                                                                {% endwith %}
+                                                        </div>
+                                                        <label class="PTid" for="tId">Enter Transaction ID</label>
+                                                        <input type="text" id="tId" name="transaction_id"
+                                                                placeholder="Transaction ID">
+                                                        <!-- <input type="hidden" name="course_batch" value="{{current_batch_id}}"> -->
+                                                        <button type="submit" class="register_btn">Submit</button>
+                                                </form>
                                         </div>
-                                    </div>
+                                </div>
 
                                 <p class="EifREquired req_bottom">If required, call at <a
                                                 href="tel: +8801785707700">+8801785707700</a> (10 am to 10 pm)</p>
@@ -181,7 +206,8 @@
                                                 <div
                                                         class="single-footer footer-about sm-mb50 xs-mb50 sm-center xs-center">
                                                         <div class="footer-logo mb30">
-                                                                <a href="#"><img src="{{url_for('static', filename='assest/img/logo.png')}}" alt></a>
+                                                                <a href="#"><img src="{{url_for('static', filename='assest/img/logo.png')}}"
+                                                                                alt></a>
                                                         </div>
                                                         <p>Saudi Arabia has been accused of using anti-terror laws to
                                                                 suppress free expression and failing to carry out

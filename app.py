@@ -147,23 +147,23 @@ class CourseBatch(db.Model):
 #     course = db.relationship('Course', backref=db.backref('course_referral_codes', lazy=True))
 
 
-# class CourseEnroll(db.Model):
-#     id = db.Column('id', db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-#     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
-#     course_batch_id = db.Column(db.Integer, db.ForeignKey('course_batch.id'), nullable=False)
-#     enroll_status = db.Column(db.Integer, nullable=False, default=0)
-#     enroll_date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())  # Set default to current timestamp
-#     transaction_id = db.Column(db.String(130), nullable=False)
-#     referral_code = db.Coulmn(db.String(130), nullable=True)
+class CourseEnroll(db.Model):
+    id = db.Column('id', db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+    course_batch_id = db.Column(db.Integer, db.ForeignKey('course_batch.id'), nullable=False)
+    # enroll_status = db.Column(db.Integer, nullable=False, default=0)
+    enroll_date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())  # Set default to current timestamp
+    transaction_id = db.Column(db.String(130), nullable=False)
+    referral_code = db.Column(db.String(130), nullable=True)
 
-#     # Define relationships
-#     user = db.relationship('User', backref=db.backref('course_enrolls', lazy=True))
-#     course = db.relationship('Course', backref=db.backref('course_enrolls', lazy=True))
-#     course_batch = db.relationship('CourseBatch', backref=db.backref('course_enrolls', lazy=True))
+    # Define relationships
+    user = db.relationship('User', backref=db.backref('course_enrolls', lazy=True))
+    course = db.relationship('Course', backref=db.backref('course_enrolls', lazy=True))
+    course_batch = db.relationship('CourseBatch', backref=db.backref('course_enrolls', lazy=True))
 
-#     # Unique constraint to ensure no duplicate enrollments
-#     __table_args__ = (db.UniqueConstraint('user_id', 'course_id', 'course_batch_id', name='_course_enroll_uc'),)
+    # Unique constraint to ensure no duplicate enrollments
+    __table_args__ = (db.UniqueConstraint('user_id', 'course_id', 'course_batch_id', name='_course_enroll_uc'),)
  
 
 
@@ -732,8 +732,10 @@ def course_detail(course_url):
     # Try to find the course with the given slug
     course = Course.query.filter_by(course_slug=course_url).first()
     user_name = None
+    user_course = None
     if 'user_id' in session:
         user_name = session['user_name']
+        
     if course is None:
         # If the course is not found, check in the old slugs
         courses = Course.query.with_entities(Course.course_title, Course.course_old_slug).filter(Course.course_old_slug.isnot(None)).all()
@@ -747,15 +749,19 @@ def course_detail(course_url):
                 # If a match is found, get the course with the corresponding title
                 course = Course.query.filter_by(course_title=course_title).first_or_404()
                 session['next'] = 'http://127.0.0.1:5000/course/' + course.course_slug
-                return render_template('userend/course_details.html', course=course, user_name=user_name)
+                if 'user_id' in session:
+                    user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
+                return render_template('userend/course_details.html', course=course, user_name=user_name, user_course=user_course)
 
         # If no course is found, flash a message and redirect
         flash('Course not found.')
         return redirect(url_for('home'))
+    if 'user_id' in session:
+        user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
     # url redirect_back
     session['next'] = request.url
     # If the course is found with the current slug, render the page
-    return render_template('userend/course_details.html', course=course, user_name=user_name)
+    return render_template('userend/course_details.html', course=course, user_name=user_name, user_course=user_course)
 
 
 
@@ -774,7 +780,7 @@ def course_detail(course_url):
 
 
 
-@app.route('/course/enroll/<course_url>')
+@app.route('/course/enroll/<course_url>', methods=['GET', 'POST'])
 def course_enroll(course_url):
     if 'user_id' not in session:
         session['next'] = request.url   # url redirect_back save
@@ -800,8 +806,43 @@ def course_enroll(course_url):
             current_batch_id = batch.id
             current_batch_num = batch.batch_num
             break
-    # if request.method == 'POST':
-    #     user_id = session['user_id']
+
+    if request.method == 'POST':
+        # Handle form submission
+        transaction_id = request.form.get('transaction_id')
+        
+        if not transaction_id:
+            flash('Transaction ID is required', 'danger')
+            return redirect(request.url)
+
+        user_id = session['user_id']
+
+        # Check if the user is already enrolled in the course
+        existing_enrollment = CourseEnroll.query.filter_by(user_id=user_id, course_id=course.id, course_batch_id=current_batch_id).first()
+        if existing_enrollment:
+            flash('You are already enrolled in this course', 'info')
+            return redirect(url_for('course_detail', course_url=course.course_slug))
+
+        # Enroll the user
+        new_enrollment = CourseEnroll(
+            user_id=user_id,
+            course_id=course.id,
+            course_batch_id=current_batch_id,
+            transaction_id=transaction_id,
+            # referral_code=your_referral_code_logic_here  # Add this if you have referral code logic
+        )
+
+        db.session.add(new_enrollment)
+        db.session.commit()
+
+        flash('You have successfully enrolled in the course!', 'success')
+        return redirect(url_for('course_detail', course_url=course.course_slug))
+
+    user_course = None
+    user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
+    if user_course:
+        return redirect(url_for('course_detail', course_url=course.course_slug))
+
     return render_template('userend/course_enroll.html', user_name=session['user_name'], course=course, current_batch_id=current_batch_id, current_batch_num=current_batch_num)
 
 

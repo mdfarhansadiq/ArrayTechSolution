@@ -72,10 +72,14 @@
                                                                 <li><a href="index.html#faqs">Faqs</a></li>
                                                                 <li><a href="index.html#contact">Contact</a></li>
                                                                 {% if user_name == None %}
-								<li><a class="login_btn" href="{{ url_for('login')}}">Login/Signup</a></li>
-								{% else %}
-								<li><a class="login_btn" href="{{ url_for('logout')}}">Logout</a></li>
-								{% endif %}
+                                                                <li><a class="login_btn"
+                                                                                href="{{ url_for('login')}}">Login/Signup</a>
+                                                                </li>
+                                                                {% else %}
+                                                                <li><a class="login_btn"
+                                                                                href="{{ url_for('logout')}}">Logout</a>
+                                                                </li>
+                                                                {% endif %}
                                                         </ul>
                                                 </div>
                                         </div>
@@ -754,7 +758,8 @@
                                 <div class="course_sidebar">
 
                                         <div class="CDSB-img">
-                                                <img src="{{url_for('static', filename='courseimg/' + course.course_image)}}" alt="{{ course.course_title}}" class="cdImg">
+                                                <img src="{{url_for('static', filename='courseimg/' + course.course_image)}}"
+                                                        alt="{{ course.course_title}}" class="cdImg">
                                                 {% if course.course_discount_percent %}
                                                 <p class="cds_discount">Discount:
                                                         <b><span>{{course.course_discount_percent}}%</span></b>
@@ -836,7 +841,18 @@
                                                 </div> -->
 
                                                 <!-- Send btn -->
-                                                <a href="{{url_for('course_enroll', course_url=course.course_slug)}}" class="buy_now register_btn">Buy now</a>
+                                                {% if user_name == None %}
+                                                <a href="{{url_for('course_enroll', course_url=course.course_slug)}}"
+                                                        class="buy_now register_btn">Enroll now</a>
+                                                {% endif %}
+                                                {% if user_course == None %}
+                                                <a href="{{url_for('course_enroll', course_url=course.course_slug)}}"
+                                                        class="buy_now register_btn">Enroll now</a>
+                                                {% else %}
+                                                <button class="buy_now register_btn" disabled>You already enrolled this
+                                                        course</button>
+                                                {% endif %}
+
                                         </div>
                                 </div>
                         </div>
