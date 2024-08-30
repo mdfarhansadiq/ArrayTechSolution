@@ -104,11 +104,23 @@
         </section>
 
         <!-- Course details body -->
+
         <section class="course_details_body_section">
                 <div class="container">
                         <!-- <div class="btn_register">
                         <a href="#" class="register_btn">Register</a>
                 </div> -->
+                        <div>
+                                {% with messages = get_flashed_messages() %}
+                                {% if messages %}
+                                {% for message in messages %}
+                                <h3>{{ message }}
+                                        <h3 />
+                                        {% endfor %}
+                                        {% endif %}
+                                        {% endwith %}
+                        </div>
+                        <br>
                         <div class="course_body_main">
                                 <!-- Course content -->
                                 <div class="course_content">
@@ -845,10 +857,10 @@
                                                 <a href="{{url_for('course_enroll', course_url=course.course_slug)}}"
                                                         class="buy_now register_btn">Enroll now</a>
                                                 {% endif %}
-                                                {% if user_course == None %}
+                                                {% if user_course == None and user_name != None %}
                                                 <a href="{{url_for('course_enroll', course_url=course.course_slug)}}"
                                                         class="buy_now register_btn">Enroll now</a>
-                                                {% else %}
+                                                {% elif user_course != None and user_name != None %}
                                                 <button class="buy_now register_btn" disabled>You already enrolled this
                                                         course</button>
                                                 {% endif %}

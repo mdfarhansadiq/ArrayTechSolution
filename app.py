@@ -1,5 +1,6 @@
 import os
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, redirect, url_for, render_template, request, session, flash, json
+import requests
 from datetime import timedelta
 from flask_wtf import FlaskForm
 from wtforms import StringField, EmailField, SubmitField
@@ -7,7 +8,7 @@ from wtforms.validators import DataRequired, Email
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 # from flask_wtf.csrf import CSRFProtect
-# from flask_wtf.recaptcha import RecaptchaField
+from flask_wtf import RecaptchaField
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import re
@@ -29,8 +30,8 @@ app.config['GOOGLE_CLIENT_SECRET'] = "google_client_secret_key"
 
 
 # reCAPTCHA configuration
-# app.config['RECAPTCHA_PUBLIC_KEY'] = 'recaptcha_public_key'
-# app.config['RECAPTCHA_PRIVATE_KEY'] = 'recaptcha_private_key'
+app.config['RECAPTCHA_PUBLIC_KEY'] = 'google_recaptcha_public_key'
+app.config['RECAPTCHA_PRIVATE_KEY'] = 'google_recaptcha_private_key'
 # app.config['RECAPTCHA_ENABLED'] = True
 
 # Set up the database URI
@@ -1000,51 +1001,71 @@ def admin_logout_signout():
 
 
 
-class SignupForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
-    useremail = StringField('Email', validators=[DataRequired(), Email()])
-    usernumber = StringField('Number', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    # recaptcha = RecaptchaField()
-    submit = SubmitField('Signup')
+# class SignupForm(FlaskForm):
+#     recaptcha = RecaptchaField()
+#     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
+#     useremail = StringField('Email', validators=[DataRequired(), Email()])
+#     usernumber = StringField('Number', validators=[DataRequired()])
+#     password = PasswordField('Password', validators=[DataRequired()])
+#     submit = SubmitField('Signup')
 
-
+def is_human(captcha_response):
+    """ Validating recaptcha response from google server
+        Returns True captcha test passed for submitted form else returns False.
+    """
+    secret = "googlerecaptchasecretkey"
+    payload = {'response':captcha_response, 'secret':secret}
+    response = requests.post("https://www.google.com/recaptcha/api/siteverify", payload)
+    response_text = json.loads(response.text)
+    return response_text['success']
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    sitekey = "googlerecaptchasitekey"
     if 'user_id' in session:
         next_url = session.pop('next', url_for('home'))
         return redirect(next_url)
-    form = SignupForm()
-    if form.validate_on_submit():  # This checks if the form has been submitted and all validations passed
-        username = form.username.data
-        useremail = form.useremail.data
-        usernumber = form.usernumber.data
-        password = form.password.data
-        
+    
+    if request.method == 'POST':
+        # This checks if the form has been submitted and all validations passed
+        username = request.form.get("username")
+        useremail = request.form.get("useremail")
+        usernumber = request.form.get("usernumber")
+        password = request.form.get("password")
+        captcha_response = request.form['g-recaptcha-response']
         # Check if the user already exists
-        existing_user = User.query.filter_by(useremail=useremail).first()
-        if existing_user:
-            flash('Email already exists. Please choose a different email.', 'danger')
-            return redirect(url_for('signup'))
+
+        if is_human(captcha_response):
+            # Process request here
+            status = "Detail submitted successfully."
+            existing_user = User.query.filter_by(useremail=useremail).first()
+            if existing_user:
+                flash('Email already exists. Please choose a different email.', 'danger')
+                return redirect(url_for('signup'))
         
         # Hash the password before saving it
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         
         # Create a new user with the hashed password
-        new_user = User(username=username, useremail=useremail, usernumber=usernumber, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        user = User.query.filter_by(useremail=useremail).first()
-        session['user_id'] = user.id
-        session['user_email'] = user.useremail
-        session['user_name'] = user.username
-        next_url = session.pop('next', url_for('home'))
-        return redirect(next_url)
+            new_user = User(username=username, useremail=useremail, usernumber=usernumber, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+            user = User.query.filter_by(useremail=useremail).first()
+            session['user_id'] = user.id
+            session['user_email'] = user.useremail
+            session['user_name'] = user.username
+            next_url = session.pop('next', url_for('home'))
+            return redirect(next_url)
+        else:
+             # Log invalid attempts
+            status = "Sorry ! Please Check Im not a robot."
+            flash(status, 'danger')
+            return redirect(url_for('signup'))
+        
         # flash('Account created successfully! You can now log in.', 'success')
     
-    return render_template('userend/signup.html', form=form)
+    return render_template('userend/signup.html', sitekey=sitekey)
 
 
 

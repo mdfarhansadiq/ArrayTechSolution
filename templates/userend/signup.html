@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <link rel="stylesheet" href="{{url_for('static', filename='signup.css')}}">
+    <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 
 <body>
@@ -30,10 +31,10 @@
                     </div>
                     <h1 class="signup_title">Sign Up</h1>
                     <form action="{{url_for('signup')}}" method="POST" class="signup_form">
-                        {{ form.hidden_tag() }}
+                        
                         <div class="input_div">
                             <i class="fa-solid fa-user"></i>
-                            {{ form.username(class="name", placeholder="Your Name") }}
+                            <input class="name" type="text" name="username" placeholder="Your Name">
                         </div>
                         <div>
                             {% with messages = get_flashed_messages() %}
@@ -46,20 +47,18 @@
                         </div>
                         <div class="input_div">
                             <i class="fa-solid fa-envelope"></i>
-                            {{ form.useremail(class="name", placeholder="Your Email") }}
+                            <input class="name" type="text" name="useremail" placeholder="Your Email">
                         </div>
                         <div class="input_div">
                             <i class="fa-solid fa-phone"></i>
-                            {{ form.usernumber(class="name", placeholder="Your Phone") }}
+                            <input class="name" type="text" name="usernumber" placeholder="Your Phone">
                         </div>
                         <div class="input_div">
                             <i class="fa-solid fa-lock"></i>
-                            {{ form.password(class="name", placeholder="Your Password") }}
+                            <input class="name" type="password" name="password" placeholder="Your password">
                         </div>
-                        <!-- <div class="input_div">
-                            {{ form.recaptcha }}
-                        </div> -->
-                        <button class="signup_send" type="submit">{{ form.submit.label.text }}</button>
+                        <div class="g-recaptcha" data-sitekey="{{ sitekey }}"></div>
+                        <button class="signup_send" type="submit">Signup</button>
                     </form>
                 </div>
 
@@ -70,7 +69,7 @@
         </div>
     </section>
 
-    <script src="https://www.google.com/recaptcha/api.js?render=your_development_site_key"></script>
+    <!-- <script src="https://www.google.com/recaptcha/api.js?render=your_development_site_key"></script> -->
 
 </body>
 
