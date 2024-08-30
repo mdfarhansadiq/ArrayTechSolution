@@ -1001,13 +1001,8 @@ def admin_logout_signout():
 
 
 
-# class SignupForm(FlaskForm):
-#     recaptcha = RecaptchaField()
-#     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=50)])
-#     useremail = StringField('Email', validators=[DataRequired(), Email()])
-#     usernumber = StringField('Number', validators=[DataRequired()])
-#     password = PasswordField('Password', validators=[DataRequired()])
-#     submit = SubmitField('Signup')
+
+
 
 def is_human(captcha_response):
     """ Validating recaptcha response from google server
@@ -1039,7 +1034,7 @@ def signup():
 
         if is_human(captcha_response):
             # Process request here
-            
+
             # Check if the user already exists
             existing_user = User.query.filter_by(useremail=useremail).first()
             if existing_user:
@@ -1162,6 +1157,8 @@ def logout():
 #             print("User table dropped.")
 #         else:
 #             print("User table does not exist.")
+
+
 
 
 

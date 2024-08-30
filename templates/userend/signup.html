@@ -24,7 +24,7 @@
             <div class="signup_inner">
                 <div class="signup_content">
                     <div class="logo">
-                        <a href="index.html" class="logo_link">
+                        <a href="{{url_for('home')}}" class="logo_link">
                             <img class="main_logo" src="{{url_for('static', filename='assest/img/logo.png')}}"
                                 alt="Logo">
                         </a>
@@ -36,15 +36,7 @@
                             <i class="fa-solid fa-user"></i>
                             <input class="name" type="text" name="username" placeholder="Your Name">
                         </div>
-                        <div>
-                            {% with messages = get_flashed_messages() %}
-                            {% if messages %}
-                            {% for message in messages %}
-                            {{ message }}
-                            {% endfor %}
-                            {% endif %}
-                            {% endwith %}
-                        </div>
+                        
                         <div class="input_div">
                             <i class="fa-solid fa-envelope"></i>
                             <input class="name" type="text" name="useremail" placeholder="Your Email">
@@ -56,6 +48,15 @@
                         <div class="input_div">
                             <i class="fa-solid fa-lock"></i>
                             <input class="name" type="password" name="password" placeholder="Your password">
+                        </div>
+                        <div>
+                            {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            {% for message in messages %}
+                            <h3>{{ message }}</h3>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
                         </div>
                         <div class="g-recaptcha" data-sitekey="{{ sitekey }}"></div>
                         <button class="signup_send" type="submit">Signup</button>
