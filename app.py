@@ -1028,17 +1028,19 @@ def signup():
         return redirect(next_url)
     
     if request.method == 'POST':
+
         # This checks if the form has been submitted and all validations passed
         username = request.form.get("username")
         useremail = request.form.get("useremail")
         usernumber = request.form.get("usernumber")
         password = request.form.get("password")
         captcha_response = request.form['g-recaptcha-response']
-        # Check if the user already exists
+        
 
         if is_human(captcha_response):
             # Process request here
-            status = "Detail submitted successfully."
+            
+            # Check if the user already exists
             existing_user = User.query.filter_by(useremail=useremail).first()
             if existing_user:
                 flash('Email already exists. Please choose a different email.', 'danger')
