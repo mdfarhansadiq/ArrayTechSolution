@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Simplified Skill - Course Batch Data</title>
+    <title>Simplified Skill - User Data</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet"
         href="{{url_for('static', filename='admin-asset/assets/vendor/bootstrap/css/bootstrap.min.css')}}">
@@ -209,13 +209,13 @@
                                     Category Data</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{url_for('subcategory')}}"><i
-                                        class="fa fa-book"></i></i>Course
+                                <a class="nav-link" href="{{url_for('subcategory')}}"><i class="fa fa-book"
+                                        style=""></i>Course
                                     Subcategory</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {% if request.path == url_for('subcategory_data') %}active{% endif %}"
-                                    href="{{url_for('subcategory_data')}}"><i class="fa fa-database"></i></i>Course
+                                <a class="nav-link" href="{{url_for('subcategory_data')}}"><i class="fa fa-database"
+                                        style=""></i>Course
                                     Subcategory Data</a>
                             </li>
                         </ul>
@@ -237,7 +237,7 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="page-header">
-                            <h2 class="pageheader-title">Course Enrollment Data - DataTable</h2>
+                            <h2 class="pageheader-title">Accepted Course Enrollment - DataTable</h2>
 
                             <div class="page-breadcrumb">
                                 <nav aria-label="breadcrumb">
@@ -264,64 +264,37 @@
                     <!-- ============================================================== -->
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
-                            <h5 class="card-header">Course Enrollment Data - Basic DataTable</h5>
-                            <div>
-                                {% with messages = get_flashed_messages() %}
-                                {% if messages %}
-                                {% for message in messages %}
-                                <h3>{{ message }}</h3>
-                                {% endfor %}
-                                {% endif %}
-                                {% endwith %}
-                            </div>
+                            <h5 class="card-header">Accepted Course Enrollment - Basic DataTable</h5>
                             <div class="card-body">
-                                <form action="{{ url_for('accept_selected_course_enrollment') }}" method="post">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered first">
-                                            <thead>
-                                                <tr>
-                                                    <th><input type="checkbox" id="selectAll"></th>
-                                                    <th>Serial No.</th>
-                                                    <th>User Name</th>
-                                                    <th>Course Title</th>
-                                                    <th>Batch Number</th>
-                                                    <th>Enrollment Date</th>
-                                                    <th>Transaction ID</th>
-                                                    <th>Referral Code</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for enroll in enrollments %}
-                                                <tr>
-                                                    <!-- Each checkbox value should be the enrollment ID -->
-                                                    <td><input type="checkbox" class="select-row" name="selected_enrollments[]" value="{{ enroll.enroll_id }}"></td>
-                                                    <td>{{ loop.index }}</td>
-                                                    <td>{{ enroll.user.name }}</td>
-                                                    <td>{{ enroll.course.title }}</td>
-                                                    <td>{{ enroll.batch.batch_number }}</td>
-                                                    <td>{{ enroll.enroll_date }}</td>
-                                                    <td>{{ enroll.transaction_id }}</td>
-                                                    <td>{{ enroll.referral_code or 'N/A' }}</td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Serial No.</th>
-                                                    <th>User Name</th>
-                                                    <th>Course Title</th>
-                                                    <th>Batch Number</th>
-                                                    <th>Enrollment Date</th>
-                                                    <th>Transaction ID</th>
-                                                    <th>Referral Code</th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                    <!-- Submit button to process selected enrollments -->
-                                    <button type="submit" class="btn btn-primary mt-3">Accept Selected Course Enrollments</button>
-                                </form>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered first">
+                                        <thead>
+                                            <tr>
+                                                <th>Serial No.</th>
+                                                <th>Name</th>
+                                                <th>Course</th>
+                                                <th>Batch</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for data in accepted_enrollments %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td> <!-- Corrected to use loop.index -->
+                                                <td>{{ data.user.name }}</td> <!-- Corrected to use 'name' key -->
+                                                <td>{{ data.course.title }}</td> <!-- Corrected to use 'title' key -->
+                                                <td>{{data.batch.batch_number}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Serial No.</th>
+                                                <th>Name</th>
+                                                <th>Course</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -329,7 +302,6 @@
                     <!-- end basic table  -->
                     <!-- ============================================================== -->
                 </div>
-
 
 
                 <!-- Data Tables - Print, Excel, CSV, PDF Buttons -->
@@ -340,46 +312,32 @@
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Course Enrollment Data - DataTable</h5>
-
+                                <h5 class="mb-0">Accepted Course Enrollment - DataTable</h5>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="table table-striped table-bordered second"
-                                        style="width:100%">
+                                    <table id="example" class="table table-striped table-bordered second" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Serial No.</th>
-                                                <th>User Name</th>
-                                                <th>Course Title</th>
-                                                <th>Batch Number</th>
-                                                <th>Enrollment Date</th>
-                                                <th>Transaction ID</th>
-                                                <th>Referral Code</th>
+                                                <th>Name</th>
+                                                <th>Course</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for enroll in enrollments %}
+                                            {% for data in accepted_enrollments %}
                                             <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td>{{ enroll.user.name }}</td>
-                                                <td>{{ enroll.course.title }}</td>
-                                                <td>{{ enroll.batch.batch_number }}</td>
-                                                <td>{{ enroll.enroll_date }}</td>
-                                                <td>{{ enroll.transaction_id }}</td>
-                                                <td>{{ enroll.referral_code or 'N/A' }}</td>
+                                                <td>{{ loop.index }}</td> <!-- Corrected to use loop.index -->
+                                                <td>{{ data.user.name }}</td> <!-- Corrected to use 'name' key -->
+                                                <td>{{ data.course.title }}</td> <!-- Corrected to use 'title' key -->
                                             </tr>
                                             {% endfor %}
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <th>Serial No.</th>
-                                                <th>User Name</th>
-                                                <th>Course Title</th>
-                                                <th>Batch Number</th>
-                                                <th>Enrollment Date</th>
-                                                <th>Transaction ID</th>
-                                                <th>Referral Code</th>
+                                                <th>Name</th>
+                                                <th>Course</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -391,6 +349,8 @@
                     <!-- end data table  -->
                     <!-- ============================================================== -->
                 </div>
+                
+                
 
             </div>
             <!-- ============================================================== -->
@@ -421,42 +381,32 @@
     <!-- ============================================================== -->
     <!-- end main wrapper -->
     <!-- ============================================================== -->
-
+    <!-- Optional JavaScript -->
+    <script src="{{url_for('static', filename='admin-asset/assets/vendor/jquery/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='admin-asset/assets/vendor/bootstrap/js/bootstrap.bundle.js')}}"></script>
+    <script src="{{url_for('static', filename='admin-asset/assets/vendor/slimscroll/jquery.slimscroll.js')}}"></script>
+    <script
+        src="{{url_for('static', filename='admin-asset/assets/vendor/multi-select/js/jquery.multi-select.js')}}"></script>
+    <script src="{{url_for('static', filename='admin-asset/assets/libs/js/main-js.js')}}"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script
+        src="{{url_for('static', filename='admin-asset/assets/vendor/datatables/js/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script
+        src="{{url_for('static', filename='admin-asset/assets/vendor/datatables/js/buttons.bootstrap4.min.js')}}"></script>
+    <script src="{{url_for('static', filename='admin-asset/assets/vendor/datatables/js/data-table.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
+    <script src="https://cdn.datatables.net/rowgroup/1.0.4/js/dataTables.rowGroup.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
 
 
 
 </body>
-<!-- Optional JavaScript -->
-<script src="{{url_for('static', filename='admin-asset/assets/vendor/jquery/jquery-3.3.1.min.js')}}"></script>
-<script src="{{url_for('static', filename='admin-asset/assets/vendor/bootstrap/js/bootstrap.bundle.js')}}"></script>
-<script src="{{url_for('static', filename='admin-asset/assets/vendor/slimscroll/jquery.slimscroll.js')}}"></script>
-<script
-    src="{{url_for('static', filename='admin-asset/assets/vendor/multi-select/js/jquery.multi-select.js')}}"></script>
-<script src="{{url_for('static', filename='admin-asset/assets/libs/js/main-js.js')}}"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script
-    src="{{url_for('static', filename='admin-asset/assets/vendor/datatables/js/dataTables.bootstrap4.min.js')}}"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
-<script
-    src="{{url_for('static', filename='admin-asset/assets/vendor/datatables/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{url_for('static', filename='admin-asset/assets/vendor/datatables/js/data-table.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
-<script src="https://cdn.datatables.net/rowgroup/1.0.4/js/dataTables.rowGroup.min.js"></script>
-<script src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
-<script src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
-
-
-<!-- JavaScript to handle "Select All" functionality -->
-<script>
-    document.getElementById('selectAll').addEventListener('click', function() {
-        const checkboxes = document.querySelectorAll('.select-row');
-        checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-    });
-</script>
 
 </html>

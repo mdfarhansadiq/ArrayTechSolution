@@ -860,7 +860,7 @@
                                                 {% if user_course == None and user_name != None %}
                                                 <a href="{{url_for('course_enroll', course_url=course.course_slug)}}"
                                                         class="buy_now register_btn">Enroll now</a>
-                                                {% elif user_course != None and user_name != None %}
+                                                {% elif user_course != None and user_id != None %}
                                                 <button class="buy_now register_btn" disabled>You already enrolled this
                                                         course</button>
                                                 {% endif %}

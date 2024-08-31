@@ -25,8 +25,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(24)
 # csrf = CSRFProtect(app)
 oauth = OAuth(app)
-app.config['GOOGLE_CLIENT_ID'] = "google_client_id"
-app.config['GOOGLE_CLIENT_SECRET'] = "google_client_secret_key"
+app.config['GOOGLE_CLIENT_ID'] = 'google_client_id'
+app.config['GOOGLE_CLIENT_SECRET'] = 'google_client_secret_key'
 
 
 # reCAPTCHA configuration
@@ -98,7 +98,7 @@ class Course(db.Model):
     course_overview = db.Column(db.String(700), nullable=False)
     course_keytopic = db.Column(db.String(400), nullable=False)
     course_slug = db.Column(db.String(313), unique=True, nullable=False)
-    course_old_slug = db.Column(db.String(313), nullable=True)
+    course_old_slug = db.Column(db.String(900), nullable=True)
     course_price = db.Column(db.Integer, nullable=False)
     course_discount = db.Column(db.Integer, nullable=False, default=0)
     course_discount_percentage = db.Column(db.Integer, nullable=False, default=0)
@@ -166,6 +166,35 @@ class CourseEnroll(db.Model):
     # Unique constraint to ensure no duplicate enrollments
     __table_args__ = (db.UniqueConstraint('user_id', 'course_id', 'course_batch_id', name='_course_enroll_uc'),)
  
+
+class AcceptSelectedCourseEnrollment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Foreign key to User
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)  # Foreign key to Course
+    course_batch_id = db.Column(db.Integer, db.ForeignKey('course_batch.id'), nullable=False)  # Foreign key to CourseBatch
+    accepted_date = db.Column(db.DateTime, nullable=False)
+    transaction_id = db.Column(db.String(130), nullable=False)
+    referral_code = db.Column(db.String(130), nullable=True)
+
+    # Relationships
+    user = db.relationship('User', backref=db.backref('accept_selected_course_enrollments', lazy=True))
+    course = db.relationship('Course', backref=db.backref('accept_selected_course_enrollments', lazy=True))
+    course_batch = db.relationship('CourseBatch', backref=db.backref('accept_selected_course_enrollments', lazy=True))
+
+    # Unique constraint to ensure a user can only accept a specific course enrollment for a specific batch once
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'course_id', 'course_batch_id', name='_user_course_batch_uc'),
+    )
+
+    def __init__(self, user_id, course_id, course_batch_id, accepted_date, transaction_id, referral_code=None):
+        self.user_id = user_id
+        self.course_id = course_id
+        self.course_batch_id = course_batch_id
+        self.accepted_date = accepted_date
+        self.transaction_id = transaction_id
+        self.referral_code = referral_code
+
+
 
 
 # Google OAuth 2.0 client configuration
@@ -726,7 +755,18 @@ def course_data():
     else:
         flash('You are not authorized to access this page.', 'error')
         return redirect(url_for('admin_login'))
-    
+
+
+
+@app.route('/user-credential-data')
+def user_credential_data():
+    if 'userrole' in session and session['userrole'] == 1:
+        user_credentials = User.query.all()
+        return render_template('adminend/user_credential_data.html', user_credentials=user_credentials)
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+
 
 @app.route('/user-enroll-course-data')
 def user_enroll_course_data():
@@ -777,7 +817,7 @@ def course_detail(course_url):
     if 'user_id' in session:
         user_name = session['user_name']
         
-    if course is None:
+    if course is None:   # course_old_slug
         # If the course is not found, check in the old slugs
         courses = Course.query.with_entities(Course.course_title, Course.course_old_slug).filter(Course.course_old_slug.isnot(None)).all()
         
@@ -792,32 +832,22 @@ def course_detail(course_url):
                 course = Course.query.filter_by(course_title=course_title).first_or_404()
                 session['next'] = 'http://127.0.0.1:5000/course/' + course.course_slug
                 if 'user_id' in session:
-                    user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
+                    # check for existing enrolled same course
+                    user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first() 
+                    user_course = AcceptSelectedCourseEnrollment.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
                 return render_template('userend/course_details.html', course=course, user_name=user_name, user_course=user_course)
 
         # If no course is found, flash a message and redirect
         flash('Course not found.')
         return redirect(url_for('home'))
     if 'user_id' in session:
+        # check for existing enrolled same course
         user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
+        user_course = AcceptSelectedCourseEnrollment.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
     # url redirect_back
     session['next'] = request.url
     # If the course is found with the current slug, render the page
     return render_template('userend/course_details.html', course=course, user_name=user_name, user_course=user_course)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -860,7 +890,9 @@ def course_enroll(course_url):
         user_id = session['user_id']
 
         # Check if the user is already enrolled in the course
-        existing_enrollment = CourseEnroll.query.filter_by(user_id=user_id, course_id=course.id, course_batch_id=current_batch_id).first()
+        existing_enrollment = None
+        existing_enrollment = CourseEnroll.query.filter_by(user_id=user_id, course_id=course.id).first()
+        existing_enrollment = AcceptSelectedCourseEnrollment.query.filter_by(user_id=user_id, course_id=course.id).first()
         if existing_enrollment:
             flash('You are already enrolled in this course', 'info')
             return redirect(url_for('course_detail', course_url=course.course_slug))
@@ -882,6 +914,7 @@ def course_enroll(course_url):
 
     user_course = None
     user_course = CourseEnroll.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
+    user_course = AcceptSelectedCourseEnrollment.query.filter_by(user_id=session['user_id'], course_id=course.id).first()
     if user_course:
         return redirect(url_for('course_detail', course_url=course.course_slug))
 
@@ -889,10 +922,96 @@ def course_enroll(course_url):
 
 
 
+@app.route('/accept-selected-course-enrollment', methods=['POST'])
+def accept_selected_course_enrollment():
+    selected_enrollments = request.form.getlist('selected_enrollments[]')
+    
+    if not selected_enrollments:
+        flash('No enrollments selected.', 'warning')
+        return redirect(url_for('user_enroll_course_data'))
+
+    try:
+        for enroll_id in selected_enrollments:
+            # Fetch the original enrollment data
+            enrollment = CourseEnroll.query.get(enroll_id)
+            
+            if enrollment:
+                # Create a new AcceptSelectedCourseEnrollment instance
+                selected_enroll = AcceptSelectedCourseEnrollment(
+                    user_id=enrollment.user_id,
+                    course_id=enrollment.course_id,
+                    course_batch_id=enrollment.course_batch_id,
+                    accepted_date=enrollment.enroll_date,
+                    transaction_id=enrollment.transaction_id,
+                    referral_code=enrollment.referral_code
+                )
+                
+                # Add the selected enrollment to the session
+                db.session.add(selected_enroll)
+                
+                # Delete the original enrollment from the database
+                db.session.delete(enrollment)
+        
+        # Commit the session to save all selected enrollments to the new table
+        db.session.commit()
+        flash('Selected course enrollments have been accepted successfully.', 'success')
+        return redirect(url_for("user_enroll_course_data"))
+    except Exception as e:
+        # Rollback the session in case of any errors
+        db.session.rollback()
+        flash(f'An error occurred while storing enrollments: {str(e)}', 'danger')
+    
+    # Return to the enrollment data page after processing
+    return redirect(url_for('user_enroll_course_data'))
+
+
+
+
+@app.route('/accepted-course-enroll-data')
+def accept_course_enroll_data():
+    if 'userrole' in session and session['userrole'] == 1:
+        enroll_data = (
+            db.session.query(AcceptSelectedCourseEnrollment, User, Course, CourseBatch)
+            .join(User, AcceptSelectedCourseEnrollment.user_id == User.id)
+            .join(Course, AcceptSelectedCourseEnrollment.course_id == Course.id)
+            .join(CourseBatch, AcceptSelectedCourseEnrollment.course_batch_id == CourseBatch.id)
+            .all()
+        )
+
+        accepted_enrollments = []
+        for enroll, user, course, batch in enroll_data:
+            accepted_enrollments.append({
+                'enroll_id': enroll.id,
+                'user': {
+                    'id': user.id,
+                    'name': user.username,
+                },
+                'course': {
+                    'id': course.id,
+                    'title': course.course_title,  # Changed to 'title' to match the template
+                },
+                'batch': {
+                    'id': batch.id,
+                    'batch_number': batch.batch_num,
+                },
+                'enroll_date': enroll.accepted_date,
+                'transaction_id': enroll.transaction_id,
+                'referral_code': enroll.referral_code
+            })
+
+        # Pass the correct variable name to the template
+        return render_template('adminend/accept_course_enroll_data.html', accepted_enrollments=accepted_enrollments)
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for("admin_login"))
+
+
+
 class AdminSignupForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     useremail = EmailField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Signup')
+
 
 @app.route('/simplifiedskill/signup', methods=["GET", "POST"])
 def admin_signup():
@@ -1160,6 +1279,20 @@ def logout():
 
 
 
+# def drop_accept_selected_course_enrollment_table():
+#     with app.app_context():
+#         # Create a MetaData object
+#         meta = db.MetaData()
+#         # Reflect the existing database into MetaData
+#         meta.reflect(bind=db.engine)
+#         # Access the 'accept_selected_course_enrollment' table
+#         accept_selected_course_enrollment_table = meta.tables.get('accept_selected_course_enrollment')
+#         if accept_selected_course_enrollment_table is not None:
+#             # Drop the table if it exists
+#             accept_selected_course_enrollment_table.drop(bind=db.engine)
+#             print("AcceptSelectedCourseEnrollment table dropped.")
+#         else:
+#             print("AcceptSelectedCourseEnrollment table does not exist.")
 
 
 
@@ -1167,5 +1300,5 @@ def logout():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    # drop_user_table()
+    # drop_accept_selected_course_enrollment_table()
     app.run(host='0.0.0.0', port=5000, debug=True)
