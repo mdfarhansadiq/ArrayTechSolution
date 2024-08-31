@@ -263,6 +263,15 @@
                     <!-- basic table  -->
                     <!-- ============================================================== -->
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div>
+                            {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            {% for message in messages %}
+                            <h3>{{ message }}</h3>
+                            {% endfor %}
+                            {% endif %}
+                            {% endwith %}
+                        </div>
                         <div class="card">
                             <h5 class="card-header">Accepted Course Enrollment - Basic DataTable</h5>
                             <div class="card-body">
@@ -274,6 +283,7 @@
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>Batch</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -283,6 +293,7 @@
                                                 <td>{{ data.user.name }}</td> <!-- Corrected to use 'name' key -->
                                                 <td>{{ data.course.title }}</td> <!-- Corrected to use 'title' key -->
                                                 <td>{{data.batch.batch_number}}</td>
+                                                <td><a class="btn btn-primary" href="{{ url_for('accept_course_enroll_batch_edit_update', id=data.enroll_id) }}">Edit - [Batch]</a></td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -291,6 +302,8 @@
                                                 <th>Serial No.</th>
                                                 <th>Name</th>
                                                 <th>Course</th>
+                                                <th>Batch</th>
+                                                <th>Action</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -316,7 +329,8 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="table table-striped table-bordered second" style="width:100%">
+                                    <table id="example" class="table table-striped table-bordered second"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>Serial No.</th>
@@ -349,8 +363,8 @@
                     <!-- end data table  -->
                     <!-- ============================================================== -->
                 </div>
-                
-                
+
+
 
             </div>
             <!-- ============================================================== -->

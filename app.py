@@ -999,11 +999,72 @@ def accept_course_enroll_data():
                 'referral_code': enroll.referral_code
             })
 
+
         # Pass the correct variable name to the template
         return render_template('adminend/accept_course_enroll_data.html', accepted_enrollments=accepted_enrollments)
     else:
         flash('You are not authorized to access this page.', 'error')
         return redirect(url_for("admin_login"))
+
+
+@app.route('/accepted-course-enroll-batch-edit/<int:id>', methods=['GET', 'POST'])
+def accept_course_enroll_batch_edit_update(id):
+    if 'userrole' in session and session['userrole'] == 1:
+        # Fetching the enrollment and related data with join
+        enrollment_data = (
+            db.session.query(AcceptSelectedCourseEnrollment, User, Course, CourseBatch)
+            .join(User, AcceptSelectedCourseEnrollment.user_id == User.id)
+            .join(Course, AcceptSelectedCourseEnrollment.course_id == Course.id)
+            .join(CourseBatch, AcceptSelectedCourseEnrollment.course_batch_id == CourseBatch.id)
+            .filter(AcceptSelectedCourseEnrollment.id == id)
+            .first()
+        )
+        
+        # Handling cases where the enrollment data might not be found
+        if not enrollment_data:
+            flash('Enrollment not found.', 'error')
+            return redirect(url_for('accept_course_enroll_data'))
+        
+        # Unpacking the query result
+        enroll, user, course, course_batch = enrollment_data
+
+        # Fetch the batches for the selected course
+        course_batches = CourseBatch.query.filter_by(course_id=enroll.course_id).all()
+
+        if request.method == 'POST':
+            new_batch_id = request.form.get('batch')
+
+            # Validate data
+            if not new_batch_id:
+                flash('Please fill out all required fields.', 'error')
+                return redirect(url_for('accept_course_enroll_batch_edit_update', id=id))
+
+            # Update course batch
+            enroll.course_batch_id = new_batch_id
+            db.session.commit()
+
+            flash('Enrolled course batch updated successfully!', 'success')
+            return redirect(url_for('accept_course_enroll_data'))
+
+        return render_template('adminend/edit_accepted_course_enroll_batch.html', enroll=enroll, user=user, course=course, course_batches=course_batches, current_batch=course_batch)
+
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
+
+
+
+@app.route('/accepted-course-enroll-delete/<int:id>')
+def accept_course_enroll_delete(id):
+    if 'userrole' in session and session['userrole'] == 1:
+        enroll = AcceptSelectedCourseEnrollment.query.get_or_404(id)
+        db.session.delete(enroll)
+        db.session.commit()
+        flash('Course enrollment deleted successfully!', 'error')
+        return redirect(url_for('accept_course_enroll_data'))
+    else:
+        flash('You are not authorized to access this page.', 'error')
+        return redirect(url_for('admin_login'))
 
 
 
@@ -1300,5 +1361,4 @@ def logout():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    # drop_accept_selected_course_enrollment_table()
     app.run(host='0.0.0.0', port=5000, debug=True)
