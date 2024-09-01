@@ -12,6 +12,8 @@ from flask_wtf import RecaptchaField
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import re
+import secrets
+import string
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from authlib.integrations.flask_client import OAuth
@@ -31,8 +33,8 @@ app.config['GOOGLE_CLIENT_SECRET'] = 'google_client_secret_key'
 
 
 # reCAPTCHA configuration
-app.config['RECAPTCHA_PUBLIC_KEY'] = 'google_recaptcha_public_key'
-app.config['RECAPTCHA_PRIVATE_KEY'] = 'google_recaptcha_private_key'
+app.config['RECAPTCHA_PUBLIC_KEY'] = 'recaptcha_public_key'
+app.config['RECAPTCHA_PRIVATE_KEY'] = 'recaptcha_private_key'
 # app.config['RECAPTCHA_ENABLED'] = True
 
 # Set up the database URI
@@ -45,9 +47,9 @@ app.config['COURSE_IMAGE_UPLOAD_FOLDER'] = 'static/courseimg'  # Folder where im
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'mail_username'
-app.config['MAIL_PASSWORD'] = 'mail_password'
-app.config['MAIL_DEFAULT_SENDER'] = 'mail_default_sender'  # Default sender email address
+app.config['MAIL_USERNAME'] = 'your_gmail_address'
+app.config['MAIL_PASSWORD'] = 'your_gmail_app_password'
+app.config['MAIL_DEFAULT_SENDER'] = 'default_sender_email'  # Default sender email address
 
 
 db = SQLAlchemy(app)
@@ -234,6 +236,11 @@ def home():
     user_name = None
     if 'user_id' in session:
         user_name = session['user_name']
+    
+    session.pop('user_recover_email', None)
+    session.pop('user_recover_id', None)
+    session.pop('token', None)
+    session.pop('password_reset_link', None)
     return render_template('userend/index.html', user_name=user_name)
 
 
@@ -1214,7 +1221,6 @@ def signup():
         return redirect(next_url)
     
     if request.method == 'POST':
-
         # This checks if the form has been submitted and all validations passed
         username = request.form.get("username")
         useremail = request.form.get("useremail")
@@ -1222,7 +1228,6 @@ def signup():
         password = request.form.get("password")
         captcha_response = request.form['g-recaptcha-response']
         
-
         if is_human(captcha_response):
             # Process request here
 
@@ -1247,14 +1252,13 @@ def signup():
             return redirect(next_url)
         else:
              # Log invalid attempts
-            status = "Sorry ! Please Check Im not a robot."
+            status = "Sorry ! Please Check I'm not a robot."
             flash(status, 'danger')
             return redirect(url_for('signup'))
         
         # flash('Account created successfully! You can now log in.', 'success')
     
     return render_template('userend/signup.html', sitekey=sitekey)
-
 
 
 class LoginForm(FlaskForm):
@@ -1296,9 +1300,20 @@ def logout():
     session.pop('user_email', None)
     session.pop('user_id', None)
     session.pop('user_name', None)
+    session.pop('user_recover_email', None)
+    session.pop('user_recover_id', None)
+    session.pop('token', None)
+    session.pop('password_reset_link', None)
     # flash('You have been logged out.')
     return redirect(url_for('home'))
 
+
+def generate_token(length=32):
+    # Define the alphabet (letters + digits)
+    characters = string.ascii_letters + string.digits
+    # Generate a random token
+    token = ''.join(secrets.choice(characters) for _ in range(length))
+    return token
 
 
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -1308,30 +1323,62 @@ def forgot_password_page():
         return redirect(next_url)
     if request.method == 'POST':
         useremail = request.form.get("email")
+        # Check if the user exists
         user = None
         user = User.query.filter_by(useremail=useremail).first()
         if user == None:
             flash('Email does not exist.', 'danger')
-            # Create a message object
-            subject = 'Password Reset'
-            body = 'Your email does not exist in our database.'
-
+            return redirect(url_for('forgot_password_page'))
             
+        else:
+            session['user_recover_email'] = user.useremail
+            session['user_recover_id'] = user.id
+            session['token'] = generate_token()
+            session['password_reset_link'] = 'http://127.0.0.1:5000/password-recovery-link/' + session["token"]
+            subject = 'Password Reset Link'
+            body = 'Your password reset link is: http://127.0.0.1:5000/password-recovery-link/' + session['token']
             msg = Message(subject, recipients=[useremail])
             msg.body = body
-
         # Send the email
             try:
                 mail.send(msg)
+                flash('Password reset link has been sent successfully.', 'success')
                 return redirect(url_for('forgot_password_page'))
             except Exception as e:
                 return redirect(url_for('forgot_password_page'))
-            
-        else:
-            flash('Email is found.', 'success')
-            return redirect(url_for('forgot_password_page'))
     
+
     return render_template('userend/forgotpass.html')
+
+
+@app.route("/password-recovery-link/<token>", methods=['GET', 'POST'])
+def password_recovery_link(token):
+    if 'token' in session and session['token'] == token:
+        if request.method == 'POST':
+            new_password = request.form.get('password')
+            confirm_password = request.form.get('passwordagain')
+            if new_password == confirm_password:
+                hashed_password = generate_password_hash(confirm_password, method='pbkdf2:sha256')
+                user = User.query.filter_by(useremail=session['user_recover_email']).first()
+                user.password = hashed_password
+                db.session.commit()
+                session.pop('user_recover_email', None)
+                session.pop('user_recover_id', None)
+                session.pop('token', None)
+                session.pop('password_reset_link', None)
+                flash('Password reset successful. You can now log in.', 'success')
+                return redirect(url_for('login'))
+            else:
+                reset_link = session['password_reset_link']
+                flash('Passwords do not match. Please try again.', 'danger')
+                return redirect(reset_link)
+        
+
+        return render_template("userend/resetpass.html", token=token)
+    else:
+        return redirect(url_for('login'))
+
+
 
 # # Function to drop the 'course' table
 # @app.route('/drop_course_table')
@@ -1383,7 +1430,6 @@ def forgot_password_page():
 #             print("User table does not exist.")
 
 
-
 # def drop_accept_selected_course_enrollment_table():
 #     with app.app_context():
 #         # Create a MetaData object
@@ -1398,7 +1444,6 @@ def forgot_password_page():
 #             print("AcceptSelectedCourseEnrollment table dropped.")
 #         else:
 #             print("AcceptSelectedCourseEnrollment table does not exist.")
-
 
 
 
