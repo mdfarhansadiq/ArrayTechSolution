@@ -16,6 +16,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from authlib.integrations.flask_client import OAuth
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -41,8 +42,18 @@ app.permanent_session_lifetime = timedelta(days=7)
 app.config['COURSE_IMAGE_UPLOAD_FOLDER'] = 'static/courseimg'  # Folder where images will be saved
 
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'mail_username'
+app.config['MAIL_PASSWORD'] = 'mail_password'
+app.config['MAIL_DEFAULT_SENDER'] = 'mail_default_sender'  # Default sender email address
+
+
 db = SQLAlchemy(app)
 # db.init_app(app)
+mail = Mail(app)
+
 
 
 class Admin(db.Model):
@@ -757,10 +768,10 @@ def course_data():
         return redirect(url_for('admin_login'))
 
 
-
 @app.route('/user-credential-data')
 def user_credential_data():
     if 'userrole' in session and session['userrole'] == 1:
+
         user_credentials = User.query.all()
         return render_template('adminend/user_credential_data.html', user_credentials=user_credentials)
     else:
@@ -1288,6 +1299,39 @@ def logout():
     # flash('You have been logged out.')
     return redirect(url_for('home'))
 
+
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password_page():
+    if 'user_id' in session:
+        next_url = session.pop('next', url_for('home'))
+        return redirect(next_url)
+    if request.method == 'POST':
+        useremail = request.form.get("email")
+        user = None
+        user = User.query.filter_by(useremail=useremail).first()
+        if user == None:
+            flash('Email does not exist.', 'danger')
+            # Create a message object
+            subject = 'Password Reset'
+            body = 'Your email does not exist in our database.'
+
+            
+            msg = Message(subject, recipients=[useremail])
+            msg.body = body
+
+        # Send the email
+            try:
+                mail.send(msg)
+                return redirect(url_for('forgot_password_page'))
+            except Exception as e:
+                return redirect(url_for('forgot_password_page'))
+            
+        else:
+            flash('Email is found.', 'success')
+            return redirect(url_for('forgot_password_page'))
+    
+    return render_template('userend/forgotpass.html')
 
 # # Function to drop the 'course' table
 # @app.route('/drop_course_table')

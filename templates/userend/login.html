@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup-Simplified</title>
+    <title>Login - Unified Skill</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
@@ -55,6 +56,12 @@
                         </div> -->
                         <button class="signup_send" type="submit">{{ form.submit.label.text }}</button>
                     </form>
+
+                    <!-- Forgot Password Link -->
+                     <br>
+                    <div class="forgot_password">
+                        <a href="{{url_for('forgot_password_page')}}" class="forgot_password_link">Forgot Password?</a>
+                    </div>
                 </div>
 
                 <div class="backtologin">
@@ -69,6 +76,7 @@
 </body>
 
 </html>
+
 
 <!-- wiziwud@mailinator.com -->
 <!-- laharasy@mailinator.com -->
