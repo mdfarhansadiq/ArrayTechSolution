@@ -20,7 +20,7 @@
         href="{{url_for('static', filename='admin-asset/assets/vendor/inputmask/css/inputmask.css')}}" />
 
 
-    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <!-- <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script> -->
 </head>
 
 <body>
@@ -201,8 +201,8 @@
 
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{url_for('category')}}"><i class="fa fa-book" style=""></i>Course
+                                <a class="nav-link" href="{{url_for('category')}}"><i class="fa fa-book"
+                                        style=""></i>Course
                                     Category</a>
                             </li>
                             <li class="nav-item">
@@ -210,8 +210,8 @@
                                         class="fa fa-database"></i></i>Course Category Data</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{url_for('subcategory')}}"><i class="fa fa-book"></i></i>Course
+                                <a class="nav-link" href="{{url_for('subcategory')}}"><i
+                                        class="fa fa-book"></i></i>Course
                                     Subcategory</a>
                             </li>
                             <li class="nav-item">
@@ -224,12 +224,12 @@
                                     href="{{url_for('course_create')}}"><i class='far fa-file-alt'></i>Course Form</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{url_for('course_data')}}"><i class='far fa-file-alt'></i>Course Data</a>
+                                <a class="nav-link" href="{{url_for('course_data')}}"><i
+                                        class='far fa-file-alt'></i>Course Data</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{url_for('course_content_create')}}"><i class='far fa-file-alt'></i>Course Content Form</a>
+                                <a class="nav-link" href="{{url_for('course_content_create')}}"><i
+                                        class='far fa-file-alt'></i>Course Content Form</a>
                             </li>
                         </ul>
                     </div>
@@ -329,16 +329,18 @@
                                             <div class="form-group">
                                                 <label for="courseOverview" class="col-form-label">Course
                                                     Overview</label>
-                                                <textarea id="courseOverview" class="form-control" name="courseoverview"
-                                                    placeholder="Enter Course Overview" rows="3" required></textarea>
+                                                <textarea id="courseOverview" class="editor form-control"
+                                                    name="courseoverview" placeholder="Enter Course Overview" rows="3"
+                                                    required></textarea>
                                             </div>
 
                                             <!-- Course Key Topics -->
                                             <div class="form-group">
                                                 <label for="courseKeytopic" class="col-form-label">Course Key
                                                     Topics</label>
-                                                <textarea id="courseKeytopic" class="form-control" name="coursekeytopic"
-                                                    placeholder="Enter Course Key Topics" rows="2" required></textarea>
+                                                <textarea id="courseKeytopic" class="editor form-control"
+                                                    name="coursekeytopic" placeholder="Enter Course Key Topics" rows="2"
+                                                    required></textarea>
                                             </div>
 
                                             <!-- Course Slug -->
@@ -505,9 +507,19 @@
     </script>
 
     <!-- Apply CKEditor to textareas -->
-    <script>
+    <!-- <script>
         CKEDITOR.replace('courseoverview');
         CKEDITOR.replace('coursekeytopic');
+    </script> -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        document.querySelectorAll('.editor').forEach((textarea) => {
+            ClassicEditor
+                .create(textarea)
+                .catch(error => {
+                    console.error(error);
+                });
+        });
     </script>
 </body>
 
